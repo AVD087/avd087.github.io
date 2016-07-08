@@ -1,0 +1,1475 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Jalpc</title>
+    <description>Jack&#39;s blog,use Jekyll and github pages.</description>
+    <link>http://www.jack003.com//</link>
+    <atom:link href="http://www.jack003.com//feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Fri, 08 Jul 2016 07:23:48 +0000</pubDate>
+    <lastBuildDate>Fri, 08 Jul 2016 07:23:48 +0000</lastBuildDate>
+    <generator>Jekyll v3.1.6</generator>
+    
+      <item>
+        <title>JavaScript中if语句的几种优化代码的写法</title>
+        <description>&lt;h3 id=&quot;section&quot;&gt;一、常见的三元操作符&lt;/h3&gt;
+
+&lt;p&gt;代码如下：&lt;/p&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;baz&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;baz&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;baz&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;baz&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;baz&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;baz&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;andor&quot;&gt;二、使用and(&amp;amp;&amp;amp;)和or(||)运算符&lt;/h3&gt;
+
+&lt;p&gt;代码如下：&lt;/p&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;foo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;foo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;三、省略大括号{}&lt;/h3&gt;
+
+&lt;p&gt;代码如下：&lt;/p&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;other&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;other&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+</description>
+        <pubDate>Sun, 26 Jun 2016 00:00:00 +0000</pubDate>
+        <link>http://www.jack003.com//html/2016/06/26/JavaScript-if-statement.html</link>
+        <guid isPermaLink="true">http://www.jack003.com//html/2016/06/26/JavaScript-if-statement.html</guid>
+        
+        <category>JavaScript</category>
+        
+        
+        <category>HTML</category>
+        
+      </item>
+    
+      <item>
+        <title>JavaScript中的json数组操作</title>
+        <description>&lt;p&gt;在jquery中处理JSON数组的情况中遍历用到的比较多，但是用添加移除这些好像不是太多。
+今天试过json[i].remove(),json.remove(i)之后都不行，看网页的DOM对象中好像JSON数据是以数组的形式出现的，查阅了下相关JS中数组的操作一试果然很爽。
+记录下来。&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;数组的创建&lt;/h2&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;arrayObj&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;//创建一个数组&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;arrayObj&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;//创建一个数组并指定长度，注意不是上限，是长度&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;arrayObj&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;element0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;element1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...[,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;elementN&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]]]);&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;//创建一个数组并赋值&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;要说明的是，虽然第二种方法创建数组指定了长度，但实际上所有情况下数组都是变长的，也就是说即使指定了长度为5，仍然可以将元素存储在规定长度以外的，注意：这时长度会随之改变。&lt;/p&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;数组的元素的访问&lt;/h2&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;testGetArrValue&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;arrayObj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//获取数组的元素值&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;arrayObj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;这是新值&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//给数组元素赋予新的值&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;数组元素的添加&lt;/h2&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;arrayObj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;push&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;item1&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;item2&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[.&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;itemN&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;]]]]);&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;// 将一个或多个新元素添加到数组结尾，并返回数组新长度&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;arrayObj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;unshift&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;item1&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;item2&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[.&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;itemN&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;]]]]);&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;// 将一个或多个新元素添加到数组开始，数组中的元素自动后移，返回数组新长度&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;arrayObj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;splice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;insertPos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;item1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;item2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;itemN&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]]]);&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;//将一个或多个新元素插入到数组的指定位置，插入位置的元素自动后移，返回&quot;&quot;。&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;section-3&quot;&gt;数组元素的删除&lt;/h2&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;arrayObj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;pop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//移除最后一个元素并返回该元素值&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;arrayObj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;shift&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//移除最前一个元素并返回该元素值，数组中元素自动前移&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;arrayObj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;splice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;deletePos&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;deleteCount&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//删除从指定位置deletePos开始的指定数量deleteCount的元素，数组形式返回所移除的元素&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;section-4&quot;&gt;数组的截取和合并&lt;/h2&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;arrayObj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;slice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;end&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//以数组的形式返回数组的一部分，注意不包括 end 对应的元素，如果省略 end 将复制 start 之后的所有元素&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;arrayObj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;concat&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;item1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;item2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;itemN&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]]]);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//将多个数组（也可以是字符串，或者是数组和字符串的混合）连接为一个数组，返回连接好的新的数组&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;section-5&quot;&gt;数组的拷贝&lt;/h2&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;arrayObj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;slice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//返回数组的拷贝数组，注意是一个新的数组，不是指向&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;arrayObj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;concat&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//返回数组的拷贝数组，注意是一个新的数组，不是指向&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;section-6&quot;&gt;数组元素的排序&lt;/h2&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;arrayObj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;reverse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//反转元素（最前的排到最后、最后的排到最前），返回数组地址&lt;/span&gt;
+&lt;span class=&quot;nx&quot;&gt;arrayObj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;sort&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//对数组元素排序，返回数组地址&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;section-7&quot;&gt;数组元素的字符串化&lt;/h2&gt;
+
+&lt;div class=&quot;language-javascript highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nx&quot;&gt;arrayObj&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;separator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;//返回字符串，这个字符串将数组的每一个元素值连接在一起，中间用 separator 隔开。&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;toLocaleString 、toString 、valueOf：可以看作是join的特殊用法，不常用&lt;/p&gt;
+</description>
+        <pubDate>Thu, 23 Jun 2016 00:00:00 +0000</pubDate>
+        <link>http://www.jack003.com//html/2016/06/23/javascript-json-array.html</link>
+        <guid isPermaLink="true">http://www.jack003.com//html/2016/06/23/javascript-json-array.html</guid>
+        
+        <category>JavaScript</category>
+        
+        <category>json</category>
+        
+        
+        <category>HTML</category>
+        
+      </item>
+    
+      <item>
+        <title>清洗 Git Repo 代码仓库</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;手动清理&lt;/h2&gt;
+
+&lt;p&gt;如果你们的代码仓库问题比较少，只有几个不该提交的文件，可以参考 Atlassian 的一篇关于&lt;a href=&quot;https://confluence.atlassian.com/display/BITBUCKET/Maintaining+a+Git+Repository&quot;&gt;维护 Git Repo&lt;/a&gt;的文章。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;大致过程如下：&lt;/h3&gt;
+
+&lt;p&gt;首先进行 Git 垃圾回收：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;git gc --auto
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;其次查看 Git 仓库占用空间：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ du -hs .git/objects
+45M .git/objects
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;然后找出历史中超过一定大小的文件，最后在历史中删除并且提交。如果感兴趣手动处理这个过程可以参照文章后边的链接。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-2&quot;&gt;相关的几个命令：&lt;/h3&gt;
+
+&lt;p&gt;清理历史中的文件：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;git filter-branch --force --index-filter &#39;git rm --cached --ignore-unmatch ****/nohup.out&#39; --prune-empty --tag-name-filter cat -- --all
+git filter-branch --index-filter &#39;git rm --cached --ignore-unmatch ****/nohup.out&#39; HEAD
+git for-each-ref --format=&quot;%(refname)&quot; refs/original/ | xargs -n 1 git update-ref -d
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;强制提交覆盖：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;git reflog expire --expire=now --all
+git gc --prune=now
+git push --all --force
+git push --tags --force
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;section-3&quot;&gt;查找大文件并清理&lt;/h2&gt;
+
+&lt;p&gt;下载&lt;a href=&quot;https://raw.githubusercontent.com/Jack614/jalpc_jekyll_theme/gh-pages/git_find_big.sh&quot;&gt;Bash Script&lt;/a&gt;，在项目目录下：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ chmod 777 git_find_big.sh
+$ git gc --auto
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;查找大文件：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ git_find_big.sh 
+All sizes are in kB&#39;s. The pack column is the size of the object, compressed, inside the pack file.
+size  pack  SHA                                       location
+592   580   e3117f48bc305dd1f5ae0df3419a0ce2d9617336  media/img/emojis.jar
+550   169   b594a7f59ba7ba9daebb20447a87ea4357874f43  media/js/aui/aui-dependencies.jar
+518   514   22f7f9a84905aaec019dae9ea1279a9450277130  media/images/screenshots/issue-tracker-wiki.jar
+337   92    1fd8ac97c9fecf74ba6246eacef8288e89b4bff5  media/js/lib/bundle.js
+240   239   e0c26d9959bd583e5ef32b6206fc8abe5fea8624  media/img/featuretour/heroshot.png
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;手动清理文件：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;git filter-branch --index-filter &#39;git rm --cached --ignore-unmatch filename&#39; HEAD
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;提交&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;git push -f
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Sun, 19 Jun 2016 00:00:00 +0000</pubDate>
+        <link>http://www.jack003.com//linux/2016/06/19/clean-git-repo.html</link>
+        <guid isPermaLink="true">http://www.jack003.com//linux/2016/06/19/clean-git-repo.html</guid>
+        
+        <category>Git</category>
+        
+        
+        <category>Linux</category>
+        
+      </item>
+    
+      <item>
+        <title>AngularJS Guide Chinese version</title>
+        <description>&lt;h1 id=&quot;angularjs&quot;&gt;AngularJS&lt;/h1&gt;
+
+&lt;p&gt;这是一个AngularJS Guide的中文分支版本，提供关于AngularJS的视频、入门、使用与论坛等中文互联网内容，这里的分类并没有完全参照英文版，也并不固定，如果你有发现新的内容需要添加新类别，直接加吧。&lt;/p&gt;
+
+&lt;h2 id=&quot;section&quot;&gt;视频&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://i.youku.com/u/UMzQyMDgyODk2/videos&quot;&gt;Angular教学视频youku转载&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-1&quot;&gt;入门指南&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.infoq.com/cn/news/2013/02/angular-web-app&quot;&gt;使用AngularJS构建大型Web应用&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.ituring.com.cn/article/13471&quot;&gt;AngularJS入门教程&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.cnblogs.com/lcllao/archive/2012/10/18/2728787.html&quot;&gt;AngularJS学习笔记&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-2&quot;&gt;使用经验&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.cnblogs.com/whitewolf/archive/2013/03/24/2979344.html&quot;&gt;AngularJS开发一些经验总结&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.cnblogs.com/whitewolf/archive/2012/09/11/2680659.html&quot;&gt;再谈AngularJS DI(Dependency Injection)&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.cnblogs.com/whitewolf/archive/2013/03/27/2983806.html&quot;&gt;Angularjs的IOC Inject分析&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.cnblogs.com/whitewolf/archive/2013/05/22/3092184.html&quot;&gt;细说Angular ng-class&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.cnblogs.com/whitewolf/archive/2013/04/16/3024843.html&quot;&gt;AngularJS Controller 间通信机制&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.cnblogs.com/whitewolf/archive/2012/09/14/2684186.html&quot;&gt;AngularJS表达式-Expression&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://key232323.iteye.com/blog/1769376&quot;&gt;AngularJS关于依赖和模块与amd/cmd的区别，分享下结合使用示例&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.miniasp.com/post/2013/05/12/AngularJS-ng-module-select-ngOptions-usage-samples.aspx&quot;&gt;搞懂 AngularJS 預設模組 select 標籤的 ngOptions 參數用法&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.miniasp.com/post/2013/05/08/AngularJS-Intellisense-in-Visual-Studio-2012.aspx&quot;&gt;如何讓 Visual Studio 2012 支援 AngularJS 的 Intellisense&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.csdn.net/article/2013-04-27/2815077-code-organization-angularjs-javascript&quot;&gt;如何组织大型JavaScript应用中的代码？&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-3&quot;&gt;论坛&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.AngularJS.cn/&quot;&gt;AngularJS中文社区&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.angulargirl.com/bbs/forum.php&quot;&gt;angulargirl&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;繁体中文翻译&lt;/p&gt;
+
+&lt;h1 id=&quot;angularjs-1&quot;&gt;学习AngularJS&lt;/h1&gt;
+
+&lt;p&gt;译者: 这是jmcunningham/AngularJS-Learning的简体中文翻译
+我会尽量依照原文翻译 某些专有名词就不另外翻译 如果翻译错误也请提出建议指教 希望大家可以帮忙提供更多更好的AngularJS学习资源 谢谢&lt;/p&gt;
+
+&lt;p&gt;这里提供一些学习AngularJS的部落格链接, 文章, 和影片. 这个列表还在持续成长中. 如果你有想提供的链接与资源, 欢迎提出pull request. 我也会尽量确认以下的资源是有用的(不是只有两段文字的灌水文). 如果你有更好的方法来分类这些资源, 请让我知道. 在一般主题分类中的类似文章, 我之后也会把他们另外分类出来.&lt;/p&gt;
+
+&lt;p&gt;注意：**开头的链接是讨论ANGULAR 1.2版的新功能. 许多人希望快速了解Angular 1.2版的新功能, 所以我也会在之后开出新的分类标题. 等内容整理差不多或者1.2版分类变得太大我再来编辑, 不过现在的话Angular 1.2链接可以在两处同时看到.&lt;/p&gt;
+
+&lt;h2 id=&quot;angular-12-&quot;&gt;Angular 1.2 的新功能&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.youtube.com/watch?v=W13qDdJDHp8&amp;amp;feature=youtu.be&quot;&gt;**AngularJS 1.2 &amp;amp; Beyond&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://kensheedlo.com/2013/08/15/error-message-minification-with-minerr.html&quot;&gt;**Error Message Minification with MinErr&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://weblogs.asp.net/dwahlin/archive/2013/08/14/angularjs-routing-changes.aspx&quot;&gt;**AngularJS路由的变化&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.jasoncust.com/2013/08/angularjs-missing-directives-focus-blur_14.html&quot;&gt;**AngularJS缺失的指令: Focus &amp;amp; Blur&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.yearofmoo.com/2013/08/remastered-animation-in-angularjs-1-2.html&quot;&gt;**Remastered Animation in AngularJS 1.2&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.johnpapa.net/preparing-for-animations-in-angular-1-2-0/&quot;&gt;**Preparing for Animations in Angular 1.2.0&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.neevtech.com/blog/2013/08/17/5-cool-features-in-angularjs-1-2/&quot;&gt;**AngularJS 1.2中的5个超酷新特性&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.exratione.com/2013/09/replacing-jqueryslidedown-with-nganimate-in-angularjs-120/&quot;&gt;**在AngularJS 1.2.0中使用ngAnimate替代jQuery.slideDown()&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://wildermuth.com/2013/9/18/Getting_Ready_for_AngularJS_1_2&quot;&gt;**为AngularJS 1.2做好准备&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;books&quot;&gt;书籍 Books&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://shop.oreilly.com/product/0636920028055.do&quot;&gt;AngularJS&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.packtpub.com/angularjs-to-build-dynamic-web-applications/book&quot;&gt;立刻快速开发 AngularJS&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://leanpub.com/recipes-with-angular-js&quot;&gt;AngularJS 菜单&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.manning.com/bford/&quot;&gt;AngularJS 在行动&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://henriquat.re/&quot;&gt;AngularJS For .Net 开发员&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.packtpub.com/angularjs-web-application-development/book&quot;&gt;AngularJS 浏览器应用程序开发&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://bleedingedgepress.com/our-books/developing-an-angularjs-edge/&quot;&gt;发现自己的 AngularJS 优势&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.packtpub.com/angularjs-directives/book&quot;&gt;AngularJS Directives&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.ng-book.com/&quot;&gt;ng-book&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://teropa.info/build-your-own-angular/&quot;&gt;打造你的AngularJS&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.packtpub.com/dependency-injection-angularjs/book&quot;&gt;AngularJS依赖注入&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.packtpub.com/learning-web-development-with-bootstrap-and-angular/book&quot;&gt;通过Bootstrap和AngularJS学习Web开发&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.packtpub.com/angularjs-design-patterns/book&quot;&gt;AngularJS 设计模式&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.packtpub.com/angularjs-web-application-development-blueprints/book&quot;&gt;AngularJS 网路应用开发蓝图&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://leanpub.com/Practical_AngularJS&quot;&gt;实用 AngularJS&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;videos&quot;&gt;影片 Videos&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.egghead.io/&quot;&gt;Egghead.io&lt;/a&gt; — 44 videos of about 4 minutes each — &lt;a href=&quot;https://github.com/msfrisbie/egghead-angularjs&quot;&gt;source code&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://weblogs.asp.net/dwahlin/archive/2013/04/12/video-tutorial-angularjs-fundamentals-in-60-ish-minutes.aspx&quot;&gt;视屏教程: 60分钟教你 AngularJS 基础入门&lt;/a&gt; — 1:10:50&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.youtube.com/user/angularjs&quot;&gt;AngularJS YouTube 主页&lt;/a&gt; — several videos, mostly presentations of 1h or more&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.youtube.com/watch?v=8ILQOFAgaXE&quot;&gt;Angular JS 入门&lt;/a&gt; — 50:05&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.youtube.com/watch?v=hqAyiqUs93c&quot;&gt;Angular JS 端对端测试&lt;/a&gt; — 52:59&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.youtube.com/watch?v=18ifoT-Id54&quot;&gt;Angular JS 安全性&lt;/a&gt; — 29:45&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.youtube.com/watch?v=fSAgFxjFSqY&quot;&gt;Grunt 和 Angular JS 前端开发流程&lt;/a&gt; — 1:02:37&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.youtube.com/watch?v=WuiHuZq_cg4&quot;&gt;AngularJS 教程&lt;/a&gt; — 12:19&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://tekpub.com/products/angular&quot;&gt;AngularJS 秀 (Tekpub)&lt;/a&gt; — 8 videos (paid)&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://tutsplus.com/course/easier-js-apps-with-angular/&quot;&gt;用 AngularJS 快速开发 Javascript 应用程序(Tuts+)&lt;/a&gt; — 22 videos of about 5 minutes each, in 8 sections (paid)&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://pluralsight.com/training/Courses/TableOfContents/angularjs-fundamentals&quot;&gt;AngularJS 基础入门 (Pluralsight)&lt;/a&gt; - 6 hours 15 minutes total (paid)&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.youtube.com/watch?v=W13qDdJDHp8&amp;amp;feature=youtu.be&quot;&gt;**AngularJS 1.2 和未来&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.youtube.com/playlist?list=PLfLN8Jd9-DVEQ0-PEnVeeUYyO0yg28mhN&quot;&gt;AngularJS 实例&lt;/a&gt; - Growing list of 5 minute or less videos&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.youtube.com/watch?v=C7ZI7z7qnHU&quot;&gt;用 AngularJS 和 Firebase 开发实时程序&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.youtube.com/watch?v=XwSFg8nqBFA&quot;&gt;MongoDB 和 AngularJS， MEAN 堆&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.youtube.com/watch?v=mVjpwia1YN4&quot;&gt;AngularJS, EmberJS 和 KnockoutJS 双向绑定的比较&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://pluralsight.com/training/courses/TableOfContents?courseName=angular-best-practices&amp;amp;highlight=&quot;&gt;Angular最佳实践&lt;/a&gt; - 64 videos(paid)&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.youtube.com/channel/UCdaEMffiYgTf_E7uTMxM4og/videos&quot;&gt;Neosavvy的 Angular &amp;amp; Jasmine 视频系列&lt;/a&gt; - 16 videos of about 2-3 minutes each&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.youtube.com/channel/UCNhQ8pYS9U1EbwCx42NKaYQ&quot;&gt;AngularJS 视频集合&lt;/a&gt; — Collection of Videos from Various websites.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.youtube.com/user/ngconfvideos&quot;&gt;ng-conf YouTube 页面&lt;/a&gt; — YouTube channel with all the presentations given at the Angular Conference in January 2014.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.youtube.com/watch?v=TRrL5j3MIvo&amp;amp;feature=youtu.be&quot;&gt;通过50个例子学习 Angular.js  (第1部分)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;courses&quot;&gt;在线课程 Courses&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.thinkster.io/&quot;&gt;Thinkster.io - 学习 AngularJS 更好的方法&lt;/a&gt; - 免費的線上 AngularJS 課程&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://ng-tutorial.mgechev.com/&quot;&gt;AngularJS互动教程&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.udemy.com/angularjs-jumpstart/?sl=E0EYdlw9RBMALEwzBwZX&quot;&gt;和Dan Wahlin一起学习AngularJS&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://tutsplus.com/course/hands-on-angular/&quot;&gt;Tuts+: 开始使用 Angular&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.codeschool.com/courses/shaping-up-with-angular-js&quot;&gt;Code School Shaping Up with Angular.js&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.lynda.com/AngularJS-tutorials/Up-Running-AngularJS/154414-2.html&quot;&gt;Lynda Up and Running with AngularJS&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.codecademy.com/courses/javascript-advanced-en-2hJ3J/0/1&quot;&gt;Codecademy AngularJs&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;help&quot;&gt;帮助 Help&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://stackoverflow.com/questions/tagged/angularjs&quot;&gt;StackOverflow&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://groups.google.com/group/angular&quot;&gt;AngularJS 邮件列表（谷歌小组）&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://webchat.freenode.net/?channels=angularjs&amp;amp;uio=d4&quot;&gt;Chatroom （基于浏览器的在线聊天系统）&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://plus.google.com/u/0/communities/115368820700870330756&quot;&gt;AngularJS Google+的社区&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.reddit.com/r/angularjs&quot;&gt;reddit&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;general-topics&quot;&gt;一般主题 General Topics&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.cheatography.com/proloser/cheat-sheets/angularjs/&quot;&gt;AngularJS 速查表&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://devgirl.org/2013/03/21/fun-with-angularjs/&quot;&gt;AngularJS 乐趣&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://onehungrymind.com/angularjs-philly-ete-slides/&quot;&gt;AngularJS Philly ETE 幻灯&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.tomaka17.com/2012/12/random-tricks-when-using-angularjs/&quot;&gt;随机技巧使用 AngularJS&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.peterbe.com/plog/what-stumped-me-about-angularjs&quot;&gt;AngularJS 难倒我的是什么&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://oscarvillarreal.com/2013/05/07/5-reasons-to-use-angularjs-in-the-corporate-app-world/&quot;&gt;5个理由在企业应用程序世界中使用 AngularJS&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://ify.io/lazy-loading-in-angularjs/&quot;&gt;在 AngularJS 中实现延迟加载&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.yearofmoo.com/2012/10/more-angularjs-magic-to-supercharge-your-webapp.html&quot;&gt;用更多 AngularJS 魔力来大力增压你的浏览器应用程序&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2472-HashKeyCopier-An-AngularJS-Utility-Class-For-Merging-Cached-And-Live-Data.htm&quot;&gt;HashKeyCopier - 一个 AngularJS 合并缓存和实时数据的实用工具类&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2444-Exploring-Directives-scope-DOM-Rendering-And-Timing-In-AngularJS.htm&quot;&gt;在 AngularJS 中探索 Directive 指令，$scope，DOM 渲染和时序&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2432-Applying-A-Cached-Response-To-An-AngularJS-Resource.htm&quot;&gt;在 AngularJS 资源上应用缓存的响应&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.blogeek.com.ar/2013/06/03/angularytics-the-solution-to-tracking-page-views-and-events-in-a-spa-with-angularjs/&quot;&gt;Angularytics: 在 SPA 中用 AngularJS 来跟踪页面访问量和事件的解决方案&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.blogeek.com.ar/2013/05/01/sharing-data-state-on-angularjs-alternatives-comparison-and-my-solution/&quot;&gt;在 AngularJS 上共享数据，状态和模型： 方案选择，比较和我的解决方案&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.jefclaes.be/2013/06/angularjs-and-ie8-caching.html&quot;&gt;Angular.js 和 IE8 缓存&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.yearofmoo.com/2012/11/angularjs-and-seo.html&quot;&gt;AngularJS 和 SEO&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://sravi-kiran.blogspot.com/2013/03/TemplatesRoutingAndSharingDataBetweenViewsInAnAngularJsApplication.html&quot;&gt;模板，路由和共享数据视图之间的一个 AngularJS 的应用&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.thousandeyes.com/improving-end-user-experience-with-angularjs/&quot;&gt;用 AngularJS 改善最终用户体验&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://viralpatel.net/blogs/angularjs-controller-tutorial/&quot;&gt;AngularJS 控制器教程与实例&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://amitavroy.com/justread/content/articles/html5-local-storage-angular-js&quot;&gt;HTML5 本地存储与 Angular JS&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://gonzalo123.com/2013/07/08/dynamic-routes-with-angularjs-and-silex/&quot;&gt;动态路由和 AngularJS 以及 Silex&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://joelhooks.com/blog/2013/04/24/modeling-data-and-state-in-your-angularjs-application/&quot;&gt;在你的 AngularJS 应用中建模数据和状态&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.phase2technology.com/blog/code-reuse-in-angularjs/&quot;&gt;AngularJS 代码重用 &lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://weblogs.asp.net/dwahlin/archive/2013/05/22/dynamically-loading-controllers-and-views-with-angularjs-and-requirejs.aspx&quot;&gt;在 AngularJS 和 RequireJS 中动态加载控制器和视图&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://htmlcssjavascript.com/javascript/sorting-by-multiple-fields-with-different-sort-orders-using-the-angularjs-orderby-filter/&quot;&gt;用AngularJS的orderby筛选器对多个字段用不同顺序排序&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.brunoscopelliti.com/http-response-interceptors&quot;&gt;$http 响应拦截器&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://trochette.github.io/Angular-Design-Patterns-Best-Practices/#/intro&quot;&gt;AngularJS: 先进的设计模式和最佳实践&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://aboutcode.net/2013/07/27/json-date-parsing-angularjs.html&quot;&gt;AngularJS 的自动 JSON 数据解析&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://odetocode.com/blogs/scott/archive/2013/05/01/angularjs-abstractions-modules.aspx&quot;&gt;AngularJS 抽象：模块&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2507-Mixing-Static-Content-With-ngSwitch-And-ngSwitchWhen-In-AngularJS.htm&quot;&gt;在 AngularJS 中用 ngSwitch 和 ngSwitchWhen 来混合静态内容&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://pseudobry.com/building-large-apps-with-angularjs.html&quot;&gt;AngularJS 构建大型应用程序&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://kensheedlo.com/2013/08/15/error-message-minification-with-minerr.html&quot;&gt;**错误信息与​​微小MinErr&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog-it.hypoport.de/2013/08/24/how-to-make-your-angularjs-app-work-in-ie-8/&quot;&gt;如何让你的AngularJS 应用程序在IE8工作&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://tech.small-improvements.com/2013/09/10/angularjs-performance-with-large-lists/&quot;&gt;AngularJS 性能优化的长列表&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.innerhtml.com/responsive-website-using-angularjs.html&quot;&gt;AngularJS 响应网站&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://medium.com/p/f8ae57e2cec3&quot;&gt;在 AngularJS 减少初始化时间&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.sitepoint.com/kickstart-your-angularjs-development-with-yeoman-grunt-and-bower/&quot;&gt;用 Yeoman, Grunt 和 Bower快速开发 Angular 程序&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://wildermuth.com/2013/9/18/Getting_Ready_for_AngularJS_1_2&quot;&gt;**AngularJS 1.2 准备&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://wintellect.com/blogs/jlikness/10-reasons-web-developers-should-learn-angularjs&quot;&gt;10个理由网页开发人员应该了解AngularJS&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.mgechev.com/2013/10/01/angularjs-partials-lazy-prefetching-strategy-weighted-directed-graph/&quot;&gt;AngularJS partials 的懒惰预取&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://net.tutsplus.com/articles/resources-to-get-you-up-to-speed-in-angularjs/&quot;&gt;让你加快速度 AngularJS 开发的资源&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://solutionoptimist.com/2013/10/07/enhance-log-using-angularjs-decorators/&quot;&gt;使用装饰提升 AngularJS $log&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2542-Logging-Client-Side-Errors-With-AngularJS-And-Stacktrace-js.htm&quot;&gt;使用 AngularJS 和 Stacktrace.js 记录客户端错误&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://timothy.userapp.io/post/63412334209/form-autocomplete-and-remember-password-with-angularjs&quot;&gt;AngularJS表单自动完成，并记住密码&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.scalyr.com/2013/10/31/angularjs-1200ms-to-35ms/&quot;&gt;优化AngularJS: 从1200ms到35ms&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2551-Creating-A-RequireJS-Service-For-AngularJS-Applications.htm&quot;&gt;为AngularJS应用创建一个RequireJS服务&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2553-Loading-AngularJS-Components-After-Your-Application-Has-Been-Bootstrapped.htm&quot;&gt;在你的应用开始后加载AngularJS组件&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.getelementsbyidea.com/load-a-module-on-demand-with-angularjs/&quot;&gt;根据需求加载AngularJS模块&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://newtriks.com/2013/11/29/environment-specific-configuration-in-angularjs-using-grunt/&quot;&gt;用Grunt来配置AngularJS环境&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://weblogs.asp.net/dwahlin/archive/2014/02/18/what-s-the-role-of-the-server-in-single-page-applications-spas.aspx&quot;&gt;服务器在单页应用(SPAs)中的作用?&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.pusher.com/making-angular-js-realtime-with-pusher/&quot;&gt;通过Websockets将Angular.js实时化&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.shinetech.com/2014/02/04/rich-object-models-and-angular-js/&quot;&gt;丰富的对象模型和Angular.js&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.shinetech.com/2014/02/28/rich-object-models-and-angular-identity-maps/&quot;&gt;丰富的对象模型和Angular: 一致性映射&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.webdeveasy.com/interceptors-in-angularjs-and-useful-examples/&quot;&gt;AngularJS中的障碍和实用例子&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.undefinednull.com/2014/02/17/resolve-in-angularjs-routes-explained-as-story/&quot;&gt;通过故事理解AngularJS路径&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.safaribooksonline.com/2014/04/08/refactoring-angularjs-get-hands-filthy/&quot;&gt;重构AngularJS&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://medium.com/opinionated-angularjs/2e6a067c73bc&quot;&gt;Angular模型和javascript的类&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://jonathancreamer.com/the-state-of-angularjs-controllers/&quot;&gt;angularjs控制器的状态&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.yearofmoo.com/2014/05/how-to-use-ngmessages-in-angularjs.html&quot;&gt;怎么使用AngularJS的ngMessages&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://toddmotto.com/digging-into-angulars-controller-as-syntax/&quot;&gt;深度挖掘Angular的控制器&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://toddmotto.com/everything-about-custom-filters-in-angular-js/&quot;&gt;AngularJS自定义过滤器&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://toddmotto.com/all-about-angulars-emit-broadcast-on-publish-subscribing/&quot;&gt;理解Angular的$scope和$rootScope事件系统中的$emit,$broadcast和$on &lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.garbl.es/angularjs/preload/2014/06/07/frictionless-data-preloading-in-angularjs/&quot;&gt;AngularJS无阻碍数据预载&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;angularjs-2&quot;&gt;介绍/开始学习 AngularJS&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.adobe.com/devnet/html5/articles/getting-started-with-angularjs.html&quot;&gt;AngularJS 入门&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://stephanebegaudeau.tumblr.com/post/48776908163/everything-you-need-to-understand-to-start-with&quot;&gt;你需要开始了解的 AngularJS 的一切&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://codigovivo.com/2013/06/09/what-to-know-to-be-an-expert-in-angularjs/&quot;&gt;要成为 AngularJS 专家必备的知识&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://net.tutsplus.com/tutorials/javascript-ajax/5-awesome-angularjs-features/&quot;&gt;5个很棒的 AngularJS 功能&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.artlogic.com/2013/03/06/angularjs-for-jquery-developers/&quot;&gt;AngularJS for jQuery 开发者&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.webdesignerdepot.com/2013/04/an-introduction-to-angularjs/&quot;&gt;AngularJS 入门指南&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://net.tutsplus.com/tutorials/javascript-ajax/building-a-web-app-from-scratch-in-angularjs/&quot;&gt;用 AngularJS 从头开始写应用程序&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://glennstovall.com/blog/2013/06/27/angularjs-an-overview/&quot;&gt;AngularJS: 概述&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.sitepoint.com/angularjs-tutorial-build-an-app-using-directives-and-data-binding/&quot;&gt;AngularJS教程 - 建立一个应用程序使用的指令和数据绑定&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.revillwebdesign.com/angularjs-tutorial/&quot;&gt;在30分钟内教会你 AngularJS&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.sitepoint.com/kickstart-your-angularjs-development-with-yeoman-grunt-and-bower/&quot;&gt;用 Yeoman, Grunt 和 Bower 快速开发&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.sitepoint.com/10-reasons-use-angularjs/&quot;&gt;10个你需要开始用 AngularJS 的理由&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.kidsil.net/2013/09/filtering-with-angularjs/&quot;&gt;AngularJS 筛选器&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://toddmotto.com/ultimate-guide-to-learning-angular-js-in-one-day/&quot;&gt;一天学会 AngularJS&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://learnangularjs.net/2013/10/24/7-ways-to-be-successful-with-angularjs/&quot;&gt;7 种成功学习Angular的方法&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://scotch.io/tutorials/javascript/creating-a-single-page-todo-app-with-node-and-angular&quot;&gt; 用Node and Angular创建单页应用&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://tutorialzine.com/2013/08/learn-angularjs-5-examples&quot;&gt; 通过 5 个实例学习Angular&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.exratione.com/2013/12/considering-speed-and-slowness-in-angularjs/&quot;&gt;考虑的AngularJS的效率&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://newtriks.com/2013/11/29/environment-specific-configuration-in-angularjs-using-grunt/&quot;&gt;Environment Specific Configuration in AngularJS Using Grunt&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://solutionoptimist.com/2013/10/07/enhance-angularjs-logging-using-decorators/&quot;&gt;用装饰来提升Angular日志&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/deontologician/pipr/blob/master/tut.org&quot;&gt;Picking Up Angular, build a twitter-like application&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.loadimpact.com/2014/06/03/exception-handling-in-an-angularjs-web-application-tutorial/&quot;&gt;AngularJS网页应用的异常处理&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.pubnub.com/blog/angularjs-101-from-zero-to-angular-in-seconds/&quot;&gt;AngularJS 101: 从0开始学 Angular&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;lessons-learned&quot;&gt;使用及学习心得 Lessons Learned&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://joelhooks.com/blog/2013/05/22/lessons-learned-kicking-off-an-angularjs-project/&quot;&gt;经验教训：一年一个大AngularJS项目&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://branchandbound.net/blog/web/2013/08/some-angularjs-pitfalls/&quot;&gt;一些AngularJS陷阱&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://ruoyusun.com/2013/05/25/things-i-wish-i-were-told-about-angular-js.html&quot;&gt;我希望我事先被告知关于 Angular.js 的事实&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.objectpartners.com/2013/08/09/i-wish-i-knew-then-what-i-know-now-life-with-angularjs/&quot;&gt;我希望我当时就知道我现在知道的东西 — 我和AngularJS&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://gocardless.com/blog/building-a-large-angular-application/&quot;&gt;如何建立一个大型Angular.js应用&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bytesforthought.com/angularjs-tips/&quot;&gt;对新手和全能好奇的开发人员的 AngularJS 提示和技巧&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;multipart-articles&quot;&gt;分段式文章 Multipart Articles&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;开始使用elasticsearch和AngularJS: &lt;a href=&quot;http://www.fullscale.co/blog/2013/02/28/getting_started_with_elasticsearch_and_AngularJS_searching.html&quot;&gt;Part1 - 搜索&lt;/a&gt;, &lt;a href=&quot;http://www.fullscale.co/blog/2013/03/07/getting_started_with_elasticsearch_and-AngularJS_faceting.html&quot;&gt;Part 2: Faceting&lt;/a&gt;, &lt;a href=&quot;http://www.fullscale.co/blog/2013/03/20/getting_started_with_elasticsearch_and_AngularJS_d3.html&quot;&gt;Part 3: Visualization&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;用AngularJS开发可维护网络应用: &lt;a href=&quot;http://blog.akquinet.de/2013/01/22/maintainable-rich-web-applications-with-angularjs/&quot;&gt;Part 1&lt;/a&gt;, &lt;a href=&quot;http://blog.akquinet.de/2013/03/21/maintainable-rich-web-applications-with-angularjs-part-2/&quot;&gt;Part 2&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Google,Twitter和AngularJS: &lt;a href=&quot;http://dailyjs.com/2013/04/11/angularjs-1/&quot;&gt;1: Google, Twitter, and AngularJS&lt;/a&gt;, &lt;a href=&quot;http://dailyjs.com/2013/04/18/angularjs-2/&quot;&gt;2: Let’s Make a Feed Reader&lt;/a&gt;, &lt;a href=&quot;http://dailyjs.com/2013/04/25/angularjs-3/&quot;&gt;3: 生成源&lt;/a&gt;, &lt;a href=&quot;http://dailyjs.com/2013/05/09/angularjs-4/&quot;&gt;4: 管理源&lt;/a&gt;, &lt;a href=&quot;http://dailyjs.com/2013/05/16/angularjs-5/&quot;&gt;5: 测试&lt;/a&gt;, &lt;a href=&quot;http://dailyjs.com/2013/05/30/angularjs-6/&quot;&gt;6: 增加依赖&lt;/a&gt;, &lt;a href=&quot;http://dailyjs.com/2013/06/06/angularjs-7/&quot;&gt;7: 表格验证&lt;/a&gt;, &lt;a href=&quot;http://dailyjs.com/2013/06/13/angularjs-8/&quot;&gt;8: 迭代程序 &amp;amp; 过滤器&lt;/a&gt;, &lt;a href=&quot;http://dailyjs.com/2013/07/18/angularjs-9/&quot;&gt;9: 安装&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;用AnuglarJS打造 SignalR Stock Ticker: &lt;a href=&quot;http://sravi-kiran.blogspot.in/2013/05/ImplementingSignalRStockTickerUsingAngularJSPart1.html&quot;&gt;Part 1&lt;/a&gt;, &lt;a href=&quot;http://sravi-kiran.blogspot.in/2013/05/ImplementingSignalRStockTickerUsingAngularJSPart2.html&quot;&gt;Part 2&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;AngularJS 最佳实践: 我之前都做错了!: &lt;a href=&quot;http://blog.artlogic.com/2013/05/02/ive-been-doing-it-wrong-part-1-of-3/&quot;&gt;Part 1&lt;/a&gt;, &lt;a href=&quot;http://blog.artlogic.com/2013/05/06/angularjs-best-practices-ive-been-doing-it-wrong-part-2-of-3/&quot;&gt;Part 2&lt;/a&gt;, &lt;a href=&quot;http://blog.artlogic.com/2013/05/08/angularjs-best-practices-ive-been-doing-it-wrong-part-3-of-3/&quot;&gt;Part 3&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;AngularJS简介 &lt;a href=&quot;http://www.raweng.com/blog/2013/01/30/introduction-to-angularjs-part-1/&quot;&gt;Part 1&lt;/a&gt;, &lt;a href=&quot;http://www.raweng.com/blog/2013/05/16/introduction-to-angularjs-part-2/&quot;&gt;Part 2&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;深入AngularJS : &lt;a href=&quot;http://suhairhassan.com/2013/06/07/angularjs-in-depth-part-1.html&quot;&gt;Part 1&lt;/a&gt;, &lt;a href=&quot;http://suhairhassan.com/2013/07/25/angularjs-in-depth-part-2.html&quot;&gt;Part 2: 过滤器&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.ng-newsletter.com/posts/beginner2expert-how_to_start.html&quot;&gt;The 7 成为Angularjs大师&lt;/a&gt;, &lt;a href=&quot;http://www.ng-newsletter.com/posts/beginner2expert-scopes.html&quot;&gt;Part 2: Scopes&lt;/a&gt;, &lt;a href=&quot;http://www.ng-newsletter.com/posts/beginner2expert-data-binding.html&quot;&gt;Part 3: 双向绑定&lt;/a&gt;, &lt;a href=&quot;http://www.ng-newsletter.com/posts/beginner2expert-directives.html&quot;&gt;Part 4 and 5: Expressions and directives&lt;/a&gt;, &lt;a href=&quot;http://www.ng-newsletter.com/posts/beginner2expert-services.html&quot;&gt;Part 6: 服务&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;AngularJS 概况: &lt;a href=&quot;http://msmvps.com/blogs/theproblemsolver/archive/2013/04/05/getting-started-with-angularjs.aspx&quot;&gt;1:开始 AngularJS编程&lt;/a&gt;, &lt;a href=&quot;http://msmvps.com/blogs/theproblemsolver/archive/2013/04/10/creating-an-angularjs-controller.aspx&quot;&gt;2:创造 一个 AngularJS 控制器&lt;/a&gt;, &lt;a href=&quot;http://msmvps.com/blogs/theproblemsolver/archive/2013/04/15/the-angularjs-scope-is-not-the-mvc-model.aspx&quot;&gt;3: AngularJS $scope 不是MVC 模型&lt;/a&gt;, &lt;a href=&quot;http://msmvps.com/blogs/theproblemsolver/archive/2013/05/10/using-repeating-elements-in-angularjs.aspx&quot;&gt;4:在 AngularJS中重复使用元素&lt;/a&gt;, &lt;a href=&quot;http://msmvps.com/blogs/theproblemsolver/archive/2013/05/13/filtering-the-data-in-an-angularjs-ngrepeat-element.aspx&quot;&gt;5: 在一个 AngularJS ngRepeat 元素中过滤数据&lt;/a&gt;, &lt;a href=&quot;http://msmvps.com/blogs/theproblemsolver/archive/2013/08/19/using-the-angularjs-formcontroller-to-control-form-submission.aspx&quot;&gt;6:用 #AngularJS 表格控制器来控制表格提交&lt;/a&gt;, &lt;a href=&quot;http://msmvps.com/blogs/theproblemsolver/archive/2013/08/29/creating-an-angularjs-directive.aspx&quot;&gt;7:创造 #AngularJS Directive&lt;/a&gt;, &lt;a href=&quot;http://msmvps.com/blogs/theproblemsolver/archive/2013/09/05/using-the-dom-in-an-angularjs-application.aspx&quot;&gt;8:在一个 AngularJS 应用中使用DOM&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;打造一个基于MongoDB, ExpressJS, AngularJS, 和 Node.js的Google日历订阅App   &lt;a href=&quot;http://www.jonathanbroquist.com/blog/2013/10/building-a-google-calendar-booking-app-with-mongodb-expressjs-angularjs-and-node-js-part-1/&quot;&gt;Part 1&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;创造组建: &lt;a href=&quot;http://blog.thousandeyes.com/creating-extensible-widgets-part-1-jquery-to-angularjs/&quot;&gt;Part 1: 30秒将jQuery转成AngularJS&lt;/a&gt;, &lt;a href=&quot;http://blog.thousandeyes.com/creating-extensible-widgets-part-2-angularjs-directive-controllers/&quot;&gt;Part 2: AngularJS Directive 控制器&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;sample-apps&quot;&gt;范例应用程序 Sample Apps&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.codeproject.com/Articles/576246/A-Shopping-Cart-Application-Built-with-AngularJS&quot;&gt;建有AngularJS购物车应用程序&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://cacodaemon.de/index.php?id=51&quot;&gt;用谷歌feed API 和 AngularJS建立一个 feed 阅读器&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;scopes--compile&quot;&gt;Scopes &amp;amp; Compile&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://jimhoskins.com/2012/12/17/angularjs-and-apply.html&quot;&gt;AngularJS 和 scope.$apply&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://stackoverflow.com/questions/14049480/what-are-the-nuances-of-scope-prototypal-prototypical-inheritance-in-angularjs&quot;&gt;AngularJS 什么是范围原型/原型继承的细微之处？&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://eburley.github.io/2013/01/31/angularjs-watch-pub-sub-best-practices.html&quot;&gt;angularjs.org watch, on pub sub, 和你.&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.befundoo.com/blog/use-ng-bind-in-angularjs/&quot;&gt;AngularJS 中使用 Ng-bind&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2480-Unbinding-watch-Listeners-In-AngularJS.htm&quot;&gt;In AngularJS 中解除绑定 $watch() Listeners &lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2457-Accessing-scope-On-The-DOM-Using-AngularJS.htm&quot;&gt;使用AngularJS 对DOMZ中的 $scope 进行访问&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2449-Directive-Link-observe-And-watch-Functions-Execute-Inside-An-AngularJS-Context.htm&quot;&gt;指令链路, $observe, 和 $watch 功能在AngularJS语境执行的内部&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://codingsmackdown.tv/blog/2013/04/29/hailing-all-frequencies-communicating-in-angularjs-with-the-pubsub-design-pattern/&quot;&gt;Hailing All Frequencies – 在 AngularJS 用 Pub / Sub 设计模式进行内部沟通&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://jimhoskins.com/2012/12/14/nested-scopes-in-angularjs.html&quot;&gt;AngularJS 嵌套作用域&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://thenittygritty.co/angularjs-pitfalls-using-scopes&quot;&gt;AngularJS: 6个常见的使用作用域的陷阱&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;Scoping AngularJS Directives: &lt;a href=&quot;http://spectaclelabs.io/blog/2013/06/22/scoping-angularjs-directives-part-1/&quot;&gt;Part 1&lt;/a&gt;, &lt;a href=&quot;http://spectaclelabs.io/blog/2013/06/23/scoping-angularjs-directives-part-2/&quot;&gt;Part 2&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://angular-tips.com/blog/2013/08/watch-how-the-apply-runs-a-digest/&quot;&gt;$watch $apply 是怎么运行 $digest 的&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.benlesh.com/2013/08/angularjs-watch-digest-and-apply-oh-my.html&quot;&gt;AngularJS: $watch, $digest 和 $apply&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://angular-tips.com/blog/2013/08/removing-the-unneeded-watches/&quot;&gt;删除不需要的 Watches&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.benlesh.com/2013/08/angular-compile-how-it-works-how-to-use.html&quot;&gt;Angular - $compile: 它是如何工作，如何使用它。&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://ruoyusun.com/2013/08/24/a-glimpse-of-angularjs-scope-via-example.html&quot;&gt;通过实例来了解 Angular.js $scope&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://variadic.me/posts/2013-10-15-share-state-between-controllers-in-angularjs.html&quot;&gt;在AngularJS控制器之间共享状态&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;dependency-injection&quot;&gt;依賴注入 Dependency Injection&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.alexrothenberg.com/2013/02/11/the-magic-behind-angularjs-dependency-injection.html&quot;&gt;AngularJS依赖注入背后的魔法&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://dailyjs.com/2013/05/23/angularjs-injection/&quot;&gt;AngularJS: 更多关于依赖注入&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://diegobarahona.com/javascript/angularjs/2013/06/13/angularjs-dependency-injection/&quot;&gt;Angularjs 依赖注入&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://joelhooks.com/blog/2013/08/18/configuring-dependency-injection-in-angularjs/&quot;&gt;在 AngularJS 中配置依赖注入&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2527-Defining-Instantiatable-Classes-In-The-AngularJS-Dependency-Injection-Framework.htm&quot;&gt;在AngularJS依赖注入框架中定义实例化的类&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;directives&quot;&gt;指令 Directives&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.adobe.com/devnet/html5/articles/angularjs-directives-and-the-computer-science-of-javascript.html&quot;&gt;AngularJS指令和JavaScript的计算机科学&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://henriquat.re/directives/introduction-to-directives/introductionToDirectives.html&quot;&gt;AngularJS指令 - 特定于域的扩展为HTML&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.befundoo.com/university/tutorials/angularjs-directives-tutorial/&quot;&gt;AngularJS指令教程&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://panthersoftware.com/blog/2013/05/30/commentable-a-polymorphic-nested-comments-directive-for-angularjs/&quot;&gt;Commentable： AngularJS 的多态嵌套注释指令&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.brunoscopelliti.com/the-ngform-directive-of-angularjs&quot;&gt;AngularJS的ngForm指令&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.brunoscopelliti.com/run-a-directive-after-the-dom-has-finished-rendering&quot;&gt;执行指令后，DOM完成渲染&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.brunoscopelliti.com/use-cases-of-angularjs-directives&quot;&gt;使用AngularJS指令的案例&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2476-My-Approach-To-Building-AngularJS-Directives-That-Bind-To-JavaScript-Events.htm&quot;&gt;我的方法来构建绑定到JavaScript的事件的 AngularJS指令&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2471-Delegating-Nested-Directive-Behavior-To-Parent-Directive-In-AngularJS.htm&quot;&gt;AngularJS 委派嵌套指令行为转到父指令&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2447-Exploring-Directive-Controllers-Compiling-Linking-And-Priority-In-AngularJS.htm&quot;&gt;AngularJS 探索指令控制器，编译，链接和优先级&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2446-Using-Controllers-In-Directives-In-AngularJS.htm&quot;&gt;AngularJS 在指令中使用控制器&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.grobmeier.de/angular-js-directives-with-json-arguments-08012013.html&quot;&gt;Angular.js 使用JSON参数的指令&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://amitgharat.wordpress.com/2013/06/08/the-hitchhikers-guide-to-the-directive/&quot;&gt;指令的漫游指南&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://codingsmackdown.tv/blog/2012/12/14/creating-a-simple-angularjs-directive/&quot;&gt;创建一个简单的AngularJS指令&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.codeproject.com/Articles/607873/Extending-HTML-with-AngularJS-Directives&quot;&gt;扩展的HTML AngularJS指令&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://sporto.github.io/blog/2013/06/24/nested-recursive-directives-in-angular/&quot;&gt;Angular 嵌套递归指令&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://icelab.com.au/articles/an-all-in-one-directive-controller-with-angularjs/&quot;&gt;AngularJS一个全功能于一身的指令控制器&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://icelab.com.au/articles/levelling-up-with-angularjs-building-a-reusable-click-to-edit-directive/&quot;&gt;平了 AngularJS 的战场: 构建可重用点击编辑指令&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://joelhooks.com/blog/2013/07/15/a-look-at-angularjs-internal-directives-that-override-standard-html-tags/&quot;&gt;AngularJS 覆盖标准的HTML标签的指令&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://ngokevin.com/blog/angularslider/&quot;&gt;AngularJS 移动滑块指令&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2494-Using-Namespaces-For-One-Off-Directives-In-AngularJS.htm&quot;&gt;在AngularJS中使用命名空间一次性指令&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.phase2technology.com/blog/angularjs-and-compile/&quot;&gt;AngularJS 和 $compile&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.ng-newsletter.com/posts/directives.html&quot;&gt;深度了解指令&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.grobmeier.de/angularjs-referencing-parent-scope-directive-23082013.html&quot;&gt;AngularJS: 引用父作用域的指令&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://angular-tips.com/blog/2013/08/tip-directives-with-the-same-name/&quot;&gt;提示：具有相同的名称的指令&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://odetocode.com/blogs/scott/archive/2013/09/11/moving-data-in-an-angularjs-directive.aspx&quot;&gt;将数据移入一个AngularJS指令&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://weblogs.asp.net/dwahlin/archive/2013/09/24/building-a-custom-angularjs-unique-value-directive.aspx&quot;&gt;构建自定义 AngularJS 指令的独特价值&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://toddmotto.com/creating-an-angularjs-directive-from-one-of-your-existing-plugins-scripts/&quot;&gt;从现有的插件/脚本之一创建 AngularJS 指令&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://jasonmore.net/angular-js-directives-difference-controller-link/&quot;&gt;Angular.js指令 - 控制器和链路之间的区别&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.befundoo.com/university/tutorials/angularjs-directives-tutorial/&quot;&gt;AngularJS指令教程&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://seanhess.github.io/2013/10/14/angularjs-directive-design.html&quot;&gt;AngularJS指令设计一点通&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://suhairhassan.com/2013/10/21/refactoring-to-angularjs-directive.html&quot;&gt;重构 AngularJS 指令&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;servicesproviders&quot;&gt;服务/供应商 Services/Providers&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://iffycan.blogspot.com/2013/05/angular-service-or-factory.html&quot;&gt;Angular service 还是 factory?&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.jdriven.com/2013/03/how-to-create-singleton-angularjs-services-in-4-different-ways/&quot;&gt;如何在4种不同的方式创建 （Singleton） AngularJS服务&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://sravi-kiran.blogspot.com/2013/03/MovingAjaxCallsToACustomServiceInAngularJS.html&quot;&gt;Angular JS 中移动AJAX调用到定制服务&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://angular-tips.com/blog/2013/08/consuming-services/&quot;&gt;消费服务&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://angular-tips.com/blog/2013/08/understanding-service-types/&quot;&gt;了解服务的类型&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://djds4rce.wordpress.com/2013/08/13/understanding-angular-http-interceptors/&quot;&gt;理解 angular $http 拦截器&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.xebia.com/2013/09/01/differences-between-providers-in-angularjs/&quot;&gt;在 AngularJS 中 provider 供应商之间的差异&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://docs.google.com/document/d/1gkDp8HJU5Hdgse6d0Ol0_nsi9MQulVTbRCkEThW0RRY/edit#&quot;&gt;Angular 的模块：工厂服务，服务，价值，噢，我的天啊&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;routing&quot;&gt;路由 Routing&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.brunoscopelliti.com/how-to-defer-route-definition-in-an-angularjs-web-app&quot;&gt;如何在AngularJS Web应用程序中推迟路由定义&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://txt.fliglio.com/2013/05/angularjs-state-management-with-ui-router/&quot;&gt;AngularJS UI路由器状态管理&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2441-Nested-Views-Routing-And-Deep-Linking-With-AngularJS.htm&quot;&gt;AngularJS 嵌套视图，路由和深层链接&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://angular-ui.github.io/ui-router/sample/#/&quot;&gt;Angular UI 路由器&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://joelhooks.com/blog/2013/07/22/the-basics-of-using-ui-router-with-angularjs/&quot;&gt;AngularJS 使用UI路由器基础&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://weblogs.asp.net/dwahlin/archive/2013/08/14/angularjs-routing-changes.aspx&quot;&gt;**AngularJS 路由变化&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;promisesdeferred&quot;&gt;承诺/递延 Promises/Deferred&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.blogeek.com.ar/2013/05/02/enhancing-angular-promises-returning-new-promise-of-field-or-method-called-from-original-promises-result/&quot;&gt;加强 Angular 承诺: 从当初的诺言的结果中返回字段或方法的新的承诺&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.brunoscopelliti.com/angularjs-promise-or-dealing-with-asynchronous-requests-in-angularjs&quot;&gt;AngularJS 承诺，或在AngularJS处理异步请求&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://imownbey.github.io/skinny_controllers_for_yeezus.html&quot;&gt;在 AngularJS 中利用 Futures &lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://markdalgleish.com/2013/06/using-promises-in-angularjs-views/&quot;&gt;在 AngularJS 视图中使用承诺&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://liamkaufman.com/blog/2013/09/09/using-angularjs-promises/&quot;&gt;使用 AngularJS 承诺&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.brunoscopelliti.com/show-route-only-after-all-promises-are-resolved&quot;&gt;只有在所有的承诺都解决了再显示路由&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;forms&quot;&gt;表单 Forms&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.brunoscopelliti.com/form-validation-the-angularjs-way&quot;&gt;AngularJS 表单验证&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.brunoscopelliti.com/angularjs-directive-to-test-the-strength-of-a-password&quot;&gt;AngularJS指令来测试密码强度&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.brunoscopelliti.com/angularjs-directive-to-check-that-passwords-match&quot;&gt;AngularJS 指令来检查密码是否匹配&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2452-Mixing-Static-And-Dynamic-Data-In-An-AngularJS-Select-Menu.htm&quot;&gt;在 AngularJS 选择菜单中混合静态和动态数据&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.grobmeier.de/angular-js-ng-select-and-ng-options-21112012.html&quot;&gt;Angular.js: ng-select 和 ng-options&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.grobmeier.de/angular-js-autocomplete-and-enabling-a-form-with-watch-and-blur-19112012.html&quot;&gt;Angular.js: 用 $watch和 blur自动完成和启用表单&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://kazimanzurrashid.com/posts/create-angularjs-directives-to-remove-duplicate-codes-in-form&quot;&gt;创建AngularJS指令在表格中来删除重复的代码&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2468-Forced-Repaints-In-Directive-Can-Cause-Accidental-Scrolling-In-AngularJS.htm&quot;&gt;In AngularJS 在指令中强制重绘会导致意外滚动&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://odetocode.com/blogs/scott/archive/2013/06/19/using-ngoptions-in-angularjs.aspx&quot;&gt;在 AngularJS 中使用 ngOptions&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://sravi-kiran.blogspot.com/2013/06/ShowingValidationMessagesInBulkWhileValidatingFormUsingAngularJS.html&quot;&gt;用 Angular JS 验证表单显示大量验证消息&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.brunoscopelliti.com/a-directive-to-manage-file-upload-in-an-angularjs-application&quot;&gt;在AngularJS应用程序管理文件上传的指令&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://odetocode.com/blogs/scott/archive/2013/06/25/radio-buttons-with-angularjs.aspx&quot;&gt;AngularJS 单选按钮&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://shazwazza.com/post/Reference-the-current-form-controller-in-AngularJS&quot;&gt;AngularJS Referece 当前的 FormController&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://shazwazza.com/post/Listening-for-validation-changes-in-AngularJS&quot;&gt;在AngularJS 中监听变化的验证&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2492-What-A-Select-watch-Teaches-Me-About-ngModel-And-AngularJS.htm&quot;&gt;A Select $watch() 教我关于 ngModel 和 AngularJS&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://code.realcrowd.com/on-the-bleeding-edge-advanced-angularjs-form-validation/&quot;&gt;最前沿的：高级AngularJS表单验证&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://aboutcode.net/2013/07/13/twitter-bootstrap-control-group-directive-for-angularjs.html&quot;&gt;Twitter Bootstrap control-group directive for AngularJS&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.codebrag.com/post/57412530001/preventing-duplicated-requests-in-angularjs&quot;&gt;在AngularJS 中防止重复的请求&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.jasoncust.com/2013/08/angularjs-missing-directives-native.html&quot;&gt;AngularJS 缺少的指令：原表单复位&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.jasoncust.com/2013/08/angularjs-missing-directives-focus-blur_14.html&quot;&gt;**AngularJS 缺少的指令：焦点和模糊&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.benlesh.com/2013/03/angular-js-validating-form-elements-in.html&quot;&gt;Angular JS: 重复验证表单元素&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.benlesh.com/2012/12/angular-js-custom-validation-via.html&quot;&gt;Angular JS: 通过指令自定义验证&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.benlesh.com/2012/11/angular-js-form-validation.html&quot;&gt;Angular JS: 表单验证&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.ng-newsletter.com/posts/validations.html&quot;&gt;深入学习表单验证&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://jeremymarc.github.io/2013/08/20/ng-model-and-custom-form-validation/&quot;&gt;Ng-model 和自定义表单验证&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.amitavroy.com/justread/content/articles/angular-js-ajax-dropdowns-date-picker-and-saving-data&quot;&gt;Angular JS Ajax 下拉菜单，日期选择器和保存数据&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://mrbool.com/the-concepts-of-angularjs-forms/29117&quot;&gt;AngularJS 表单的概念&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;authentication&quot;&gt;认证 Authentication&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.brunoscopelliti.com/deal-with-users-authentication-in-an-angularjs-web-app&quot;&gt;AngularJS Web 应用程序处理用户身份验证&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.frederiknakstad.com/authentication-in-single-page-applications-with-angular-js/&quot;&gt;Angular.js 单页应用程序验证&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://arthur.gonigberg.com/2013/06/29/angularjs-role-based-auth/&quot;&gt;AngularJS – 快速的基于角色的认证&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://vickev.com/#!/article/authentication-in-single-page-applications-node-js-passportjs-angularjs&quot;&gt;单页应用验证&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;collections--ngrepeat-stuff&quot;&gt;Collections (&amp;amp; ngRepeat Stuff)&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2485-Working-With-Inherited-Collections-In-AngularJS.htm&quot;&gt;使用 AngularJS 继承来的Collection&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2451-Adding-An-ngRepeat-List-Delimiter-In-AngularJS.htm&quot;&gt;在 AngularJS 中 添加 ngRepeat 列表分隔符&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2456-Grouping-Nested-ngRepeat-Lists-In-AngularJS.htm&quot;&gt;在 AngularJS 中分组嵌套 ngRepeat 列表&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2450-Using-ngController-With-ngRepeat-In-AngularJS.htm&quot;&gt;在 AngularJS 中使用 ngController 和 ngRepeat&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2443-Rendering-DOM-Elements-With-ngRepeat-In-AngularJS.htm&quot;&gt;在 AngularJS 中通过 ngRepeat 渲染DOM元素&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;code-organization&quot;&gt;原始码组织架构 Code Organization&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://briantford.com/blog/huuuuuge-angular-apps.html&quot;&gt;用 AngularJS 开发超大的应用程序&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://cliffmeyers.com/blog/2013/4/21/code-organization-angularjs-javascript&quot;&gt;大 AngularJS 和 JavaScript 的应用的代码组织&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.blogeek.com.ar/2013/05/18/proposed-angulars-project-structure/&quot;&gt;Angular 应用程序的网页结构构想&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.blogeek.com.ar/2013/03/23/the-right-way-of-coding-angularjs-how-to-organize-a-regular-webapp/&quot;&gt;如何组织一个普通 Web 应用程序： 编码 AngularJS 的正确方法。基本示例&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://codingsmackdown.tv/blog/2013/04/19/angularjs-modules-for-great-justice/&quot;&gt;AngularJS 模块&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/Nikku/requirejs-angular-define&quot;&gt;ngDefine: AngularJS &amp;amp; RequireJS&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://clintberry.com/2013/modular-angularjs-application-design/&quot;&gt;模块化AngularJS应用设计&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://solutionoptimist.com/2013/09/30/requirejs-angularjs-dependency-injection/&quot;&gt;在 AngularJS DI 中使用 RequireJS&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;testing&quot;&gt;测试 Testing&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.yearofmoo.com/2013/01/full-spectrum-testing-with-angularjs-and-testacular.html&quot;&gt;用 AngularJS 和 Testacular 进行全频谱测试&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://codingsmackdown.tv/blog/2012/12/28/mocking-promises-in-unit-tests/&quot;&gt;在单元测试中 Mocking 承诺&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://newtriks.com/2013/04/26/how-to-test-an-angularjs-directive/&quot;&gt;如何测试AngularJS指令&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://sravi-kiran.blogspot.com/2013/04/UnitTestingAngularJsControllerUsingJasmine.html&quot;&gt;用 Jasmine 单元测试 AngularJS 控制器&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://sravi-kiran.blogspot.com/2013/06/UnitTestingAngularJsControllerUsingQUnitAndSinon.html&quot;&gt;使用 QUnit 和 Sinon 单元测试 AngularJS 控制器&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.portlandwebworks.com/blog/testing-angularjs-directives-handling-external-templates&quot;&gt;测试 AngularJS Directive： 处理外部模板&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.alexrothenberg.com/2013/08/06/how-to-unit-test-an-angular-app.html&quot;&gt;如何进行 Angular 应用程序的单元测试&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.benlesh.com/2013/06/angular-js-unit-testing-directives.html&quot;&gt;单元测试 - 指令 Directives&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.benlesh.com/2013/06/angular-js-unit-testing-services.html&quot;&gt;单元测试 - 服务&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.benlesh.com/2013/05/angularjs-unit-testing-controllers.html&quot;&gt;单元测试 - 控制器&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://flippinawesome.org/2013/09/09/mocking-server-dependencies-in-javascript-and-angularjs/&quot;&gt;在JavaScript 和 AngularJS 中 mock 服务器依赖性&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.yearofmoo.com/2013/09/advanced-testing-and-debugging-in-angularjs.html&quot;&gt;AngularJS 先进的测试和调试的&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://andyshora.com/unit-testing-best-practices-angularjs.html&quot;&gt;AngularJS 单元测试的最佳实践&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blogs.mulesoft.org/angularjs-using-decorators-for-unit-testing/&quot;&gt;在 AngularJS 中装饰你的测试&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;restful-stuff&quot;&gt;RESTful Stuff&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2433-Using-RESTful-Controllers-In-An-AngularJS-Resource.htm&quot;&gt;在 AngularJS 资源中使用 REST 风格的控制器&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.blogeek.com.ar/2013/04/09/restangular-new-angular-framework-to-handle-restful-resources-properly-and-easily/&quot;&gt;Restangular: 新AngularJS框架来适当地，轻松地处理 REST API REST 风格的资源&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.blogeek.com.ar/2013/04/26/new-features-on-restangular-the-ultimate-rest-api-client-for-angularjs/&quot;&gt;Restangular 新功能: 针对 Angular的终极 REST API 客户端&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://weblogs.asp.net/dwahlin/archive/2013/08/16/using-an-angularjs-factory-to-interact-with-a-restful-service.aspx&quot;&gt;使用 AngularJS 厂服务与 RESTful 服务实现互动&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.brunoscopelliti.com/authentication-to-a-restful-web-service-in-an-angularjs-web-app&quot;&gt;在 AngularJS web应用程序中实现一个 REST 风格的 Web 服务身份验证&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;localization&quot;&gt;本地化 Localization&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://codingsmackdown.tv/blog/2013/04/23/localizing-your-angularjs-apps-update/&quot;&gt;Localizing Your AngularJS Apps&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.brunoscopelliti.com/internazionalization-i18n-with-angularjs&quot;&gt;Internazionalization (i18n) with AngularJS&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://coderwall.com/p/uyrtpq&quot;&gt;AngularJS And i18n&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;ui-stuff&quot;&gt;界面 UI Stuff&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://angular-ui.github.io/&quot;&gt;Angular UI 套件（包括一些子项目）&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.yearofmoo.com/2013/04/animation-in-angularjs.html&quot;&gt;AngularJS 动画&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.yearofmoo.com/2013/05/enhanced-animations-in-angularjs.html&quot;&gt;在AngularJS增强的动画功能&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.befundoo.com/blog/angularjs-popup-dialog/&quot;&gt;可重复使用的 AngularJS 弹出的对话框中服务&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2440-Creating-A-Custom-Show-Hide-Directive-In-AngularJS.htm&quot;&gt;在 AngularJS 中创建自定义显示/隐藏 Directive &lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.grobmeier.de/bootstrap-tabs-with-angular-js-25112012.html&quot;&gt;在 Angular.js 中实现 Bootstrap Tabs&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://codingsmackdown.tv/blog/2013/01/02/using-response-interceptors-to-show-and-hide-a-loading-widget/&quot;&gt;使用拦截器的响应显示和隐藏一个装载小工具&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://hueypetersen.com/posts/2013/06/24/typeahead-with-angular/&quot;&gt;用 AngularJS 建立一个 Typeahead Directive &lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://fundoo-solutions.github.io/angularjs-modal-service/&quot;&gt;AngularJS Modal 服务&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2497-Cross-Fading-Images-With-AngularJS.htm&quot;&gt;AngularJS 中实现交叉衰落图像&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://dailyjs.com/2013/06/07/angular-svg/&quot;&gt;AngularJS 和 SVG&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://jjperezaguinaga.wordpress.com/2013/07/16/angularjs-scroll-animations/&quot;&gt;AngularJS: 滚动动画&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://flippinawesome.org/2013/08/05/animating-with-angularjs/&quot;&gt;AngularJS 动画&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://buildinternet.com/2013/08/drag-and-drop-file-upload-with-angularjs/&quot;&gt;用 AngularJS 实现拖放文件上传&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.yearofmoo.com/2013/08/remastered-animation-in-angularjs-1-2.html&quot;&gt;**在 AngularJS 1.2 中重新掌握动画&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.benlesh.com/2013/02/angular-js-scrolling-to-element-by-id.html&quot;&gt;Angular JS - 通过ID滚动到某个元素&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://weblogs.asp.net/dwahlin/archive/2013/08/19/building-an-angularjs-dialog-service.aspx&quot;&gt;构建 AngularJS 对话服务&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.johnpapa.net/preparing-for-animations-in-angular-1-2-0/&quot;&gt;**在 Angular 1.2.0 中准备使用动画&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.exratione.com/2013/09/replacing-jqueryslidedown-with-nganimate-in-angularjs-120/&quot;&gt;**在 AngularJS 1.2.0 中用 ngAnimate 替换 jQuery.slideDown()&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://veamospues.wordpress.com/2013/10/13/angularjs-blurred-image-directive/&quot;&gt;AngularJS: 模糊图像 directive&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://julienrenaux.fr/2013/10/27/create-a-load-more-widget-using-angularjs-ajax-and-bootstrap-3/&quot;&gt;使用AngularJS，Ajax和 Bootstrap 3 来建立一个“加载更多”小工具&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;integration-with-other-languagesframeworks&quot;&gt;整合其他语言/框架 Integration With Other Languages/Frameworks&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://notebookheavy.com/2013/05/22/angularjs-and-typescript/&quot;&gt;AngularJS 和 TypeScript&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://spiiice.net/using-angularjs-and-d3-to-create-a-wordcloud-directive/&quot;&gt;用 AngularJS 和 D3 来建立一个 WordCloud Directive&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.bennadel.com/blog/2448-Using-jQuery-Event-Delegation-In-AngularJS.htm&quot;&gt;在 AngularJS 中用 jQuery Event Delegation &lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://sravi-kiran.blogspot.in/2013/05/HookingUpAspNetSignalRWithAngularJS.html&quot;&gt;Hooking up ASP.NET SignalR with Angular JS&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.brunoscopelliti.com/facebook-authentication-in-your-angularjs-web-app&quot;&gt;在你的 AngularJS 应用程序进行 Facebook 的身份验证&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://newtriks.com/2013/06/11/automating-angularjs-with-yeoman-grunt-and-bower/&quot;&gt;用 Yeoman, Grunt &amp;amp; Bower 来全面自动化你的 Angular 开发过程&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://briantford.com/blog/angular-bower.html&quot;&gt;用 Bower 编写可重用的 AngularJS 组件&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://wbyoko.co/angularjs/angularjs-google-maps-components.html&quot;&gt;用 ngularJS 开发谷歌地图的组件&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://mircozeiss.com/sync-multiple-angularjs-apps-without-server-via-pouchdb/&quot;&gt;无需服务器来通过 PouchDB 来同步多个 AngularJS 应用程序&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://mircozeiss.com/building-offline-applications-with-angularjs-and-pouchdb/&quot;&gt;用 AngularJS 和 PouchDB构建离线应用&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://shellycloud.com/blog/2013/10/how-to-integrate-angularjs-with-rails-4&quot;&gt;如何AngularJS和Rails集成4&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;hosted-backends&quot;&gt;后端代管 Hosted Backends&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://brandid.github.io/parse-angular-demo/#/features&quot;&gt;Parse.com boilerplate 建设大型，复杂 AngularJS 应用&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/firebase/angularFire&quot;&gt;用 Firebase用于 Angular 应用程序的实时数据库&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://blog.backlift.com/entry/angular-tut1&quot;&gt;用 Backlift开发针对 Angular 的 CRUD 后端 &lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://mircozeiss.com/building-offline-applications-with-angularjs-and-pouchdb/&quot;&gt;用 AngularJS 和 PouchDB 构建离线应用&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.dreamfactory.com/angularjs-example&quot;&gt;用 DreamFactory 开发 针对 Angular 的 CRUD 后端&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.firebase.com/blog/2013-10-04-firebase-angular-data-binding.html&quot;&gt;Firebase 和 Angular 三个双向数据绑定&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;mobile&quot;&gt;移动装置 Mobile&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://devgirl.org/2013/06/10/quick-start-guide-phonegap-and-angularjs/&quot;&gt;PhoneGap+AngularJS 快速入门指南&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://briantford.com/blog/angular-phonegap.html&quot;&gt;用 AngularJS 开发 PhoneGap 引用程序&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://tech.pro/tutorial/1357/phonegap-and-angularjs-in-app-browser&quot;&gt;PhoneGap 和 AngularJS: In App Browser&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://tech.pro/tutorial/1349/phonegap-and-angularjs-notification-service&quot;&gt;PhoneGap 和 AngularJS: Notification Service&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://abou-kone.com/2013/07/17/developing-a-mobile-app-with-phonegap-angularjs-and-expressjs-part-i/&quot;&gt;用 Phonegap, AngularJS 和 ExpressJS 开发移动程序第一部分&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;text-editor-bundleside-stuff&quot;&gt;编译器 Text editor bundles/IDE Stuff&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/angular-ui/AngularJS-sublime-package&quot;&gt;Sublime text 2 包&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/matthewsimo/angular-vim-snippets&quot;&gt;VIM UltiSnip &amp;amp; Snipmate AngularJS 代码片段 &lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://blog.jetbrains.com/webstorm/2013/10/running-javascript-tests-with-karma-in-webstorm-7/&quot;&gt;在 WebStorm 7 中运行 Javscript 测试&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.microsoft.com/visualstudio&quot;&gt;Visual Studio&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;section-4&quot;&gt;开发工具&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/angular/angularjs-batarang&quot;&gt;AngularJS Batarang Chrome 浏览器扩展&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://spascaffold.azurewebsites.net/AngularJSScaffold&quot;&gt;从JSON或者 restful API生成 JavaScript 和 HTML，使用 AngularJS 和 JQuery&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Wed, 15 Jun 2016 00:00:00 +0000</pubDate>
+        <link>http://www.jack003.com//html/2016/06/15/angularjs-guide.html</link>
+        <guid isPermaLink="true">http://www.jack003.com//html/2016/06/15/angularjs-guide.html</guid>
+        
+        <category>AngularJS</category>
+        
+        
+        <category>HTML</category>
+        
+      </item>
+    
+      <item>
+        <title>Mac下给SD卡安装Raspbian系统并配置WiFi</title>
+        <description>&lt;h2 id=&quot;section&quot;&gt;1、安装&lt;/h2&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;系统下载地址&lt;/h3&gt;
+
+&lt;p&gt;插入SD卡，使用 df 查看当前已经挂载的卷&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ df
+Filesystem    512-blocks      Used Available Capacity  iused   ifree %iused  Mounted on
+/dev/disk1     233269248 218788512  13968736    94% 27412562 1746092   94%   /
+devfs                374       374         0   100%      648       0  100%   /dev
+map -hosts             0         0         0   100%        0       0  100%   /net
+map auto_home          0         0         0   100%        0       0  100%   /home
+/dev/disk2s1    31100416      4992  31095424     1%        0       0  100%   /Volumes/Pi
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;因为已经命名了SD卡为 Pi ，所以SD卡的分区对应的设备文件为：/dev/disk2s1&lt;/p&gt;
+
+&lt;p&gt;使用diskutil unmount卸载&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ diskutil unmount /dev/disk2s1
+Volume Pi on disk2s1 unmounted
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;diskutil list 确认设备 我买的是16G的卡&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ diskutil list
+/dev/disk2
+   #:                       TYPE NAME                    SIZE       IDENTIFIER
+   0:     FDisk_partition_scheme                        *15.9 GB    disk2
+   1:                 DOS_FAT_32 Pi                      15.9 GB    disk2s1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;使用dd命令将系统镜像写入&lt;/p&gt;
+
+&lt;p&gt;PS /dev/disk2s1是分区，/dev/disk2是块设备，/dev/rdisk2是原始字符设备&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ dd bs=4m if=pi.img of=/dev/rdisk2
+781+1 records in
+781+1 records out
+3276800000 bytes transferred in 194.134151 secs (16879050 bytes/sec)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;至此，SD卡上已经刷入了 Raspbian 系统&lt;/p&gt;
+
+&lt;p&gt;再用diskutil unmountDisk卸载设备&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;$ diskutil unmountDisk /dev/disk2
+Unmount of all volumes on disk2 was successful
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;wifi&quot;&gt;2、配置WiFi&lt;/h2&gt;
+
+&lt;p&gt;树莓派自带WiFi，在启动系统之后，我们可以通过&lt;code class=&quot;highlighter-rouge&quot;&gt;ip a&lt;/code&gt;命令看到wlan0网卡，下面是修改&lt;code class=&quot;highlighter-rouge&quot;&gt;/etc/network/interfaces.d&lt;/code&gt;配置文件：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# interfaces(5) file used by ifup(8) and ifdown(8)
+
+# Please note that this file is written to be used with dhcpcd
+# For static IP, consult /etc/dhcpcd.conf and &#39;man dhcpcd.conf&#39;
+
+# Include files from /etc/network/interfaces.d:
+source-directory /etc/network/interfaces.d
+
+auto lo
+iface lo inet loopback
+
+iface eth0 inet manual
+
+allow-hotplug wlan0
+
+iface wlan0 inet dhcp
+wpa-ssid WiFi-ssid
+wpa-psk WiFi-password
+iface default inet dhcp
+
+allow-hotplug wlan1
+iface wlan1 inet manual
+    wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;也可以配成静态网络&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# interfaces(5) file used by ifup(8) and ifdown(8)
+
+# Please note that this file is written to be used with dhcpcd
+# For static IP, consult /etc/dhcpcd.conf and &#39;man dhcpcd.conf&#39;
+
+# Include files from /etc/network/interfaces.d:
+source-directory /etc/network/interfaces.d
+
+auto lo
+iface lo inet loopback
+
+iface eth0 inet manual
+
+allow-hotplug wlan0
+
+iface wlan0 inet static
+wpa-ssid WiFi-ssid        # 需要连接的WiFi名
+wpa-psk WiFi-password     # WiFi密码
+address 192.168.1.110     # 设定的静态IP地址
+netmask 255.255.255.0     # 网络掩码
+gateway 192.168.1.1      # 网关
+network 192.168.1.1      # 网络地址
+iface default inet dhcp
+
+allow-hotplug wlan1
+iface wlan1 inet manual
+    wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;重启&lt;code class=&quot;highlighter-rouge&quot;&gt;init 6&lt;/code&gt;即可（需要root权限）。&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;pi@raspberrypi:~ $ ip a
+1: lo: &amp;lt;LOOPBACK,UP,LOWER_UP&amp;gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0: &amp;lt;NO-CARRIER,BROADCAST,MULTICAST,UP&amp;gt; mtu 1500 qdisc pfifo_fast state DOWN group default qlen 1000
+    link/ether b8:27:eb:ca:9c:86 brd ff:ff:ff:ff:ff:ff
+    inet6 fe80::d72f:7f67:bf11:ec0f/64 scope link tentative
+       valid_lft forever preferred_lft forever
+3: wlan0: &amp;lt;BROADCAST,MULTICAST,UP,LOWER_UP&amp;gt; mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether b8:27:eb:9f:c9:d3 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.1.14/24 brd 192.168.1.255 scope global wlan0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::c52e:80ca:79e2:ebb5/64 scope link
+       valid_lft forever preferred_lft forever
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Thu, 09 Jun 2016 00:00:00 +0000</pubDate>
+        <link>http://www.jack003.com//linux/2016/06/09/install-raspbian-on-mac.html</link>
+        <guid isPermaLink="true">http://www.jack003.com//linux/2016/06/09/install-raspbian-on-mac.html</guid>
+        
+        <category>Raspbian</category>
+        
+        
+        <category>Linux</category>
+        
+      </item>
+    
+      <item>
+        <title>用jPages为Jekyll增加分页</title>
+        <description>&lt;p&gt;Jekyll自带的分页功能总不是那么全，在&lt;a href=&quot;http://jekyll.bootcss.com/docs/pagination/&quot;&gt;官方文档&lt;/a&gt;中有讲到Jekyll自带分页的使用方法，为了达到更好的分页效果，比如在不同类别的文章下进行分页，就要用别的方法来实现了。&lt;/p&gt;
+
+&lt;p&gt;首先，在网上我也找到了很多Jekyll的第三方插件，功能很强大，不过github不允许使用，无奈之下只好另寻他法。因为平时做网站开发想到的都是后端分页的方法，那么在github这个不用考虑性能的网站上，我们为什么不能尝试使用前端分页的方法呢？而且我们的文章也不是非常多，一次得到所有数据再分页未尝不可。就这样，我在网上找到了一些基于jQuery的前端分页插件，使用感觉最好的就是&lt;a href=&quot;http://luis-almeida.github.io/jPages/&quot;&gt;jPages&lt;/a&gt;了。&lt;/p&gt;
+
+&lt;p&gt;jPages的文档很详细，每种分页的方法从html、JavaScript到CSS都有源代码，并有展示，这里我讲一下我是怎么用到jekyll中，我使用的是items per page这个example：&lt;/p&gt;
+
+&lt;h3 id=&quot;step-1&quot;&gt;Step 1&lt;/h3&gt;
+
+&lt;p&gt;首先需要把jPages.js和js.js引入页面，放在jQuery.js的下面&lt;/p&gt;
+
+&lt;h3 id=&quot;step-2&quot;&gt;Step 2&lt;/h3&gt;
+
+&lt;p&gt;然后在&lt;code class=&quot;highlighter-rouge&quot;&gt;_includes/head.html&lt;/code&gt;中加入对应的js：&lt;/p&gt;
+
+&lt;div class=&quot;language-html highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;nt&quot;&gt;&amp;lt;script &lt;/span&gt;&lt;span class=&quot;na&quot;&gt;type=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;text/javascript&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+        &lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(){&lt;/span&gt;
+          &lt;span class=&quot;cm&quot;&gt;/* initiate the plugin */&lt;/span&gt;
+          &lt;span class=&quot;nx&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;div.pag-holder&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;jPages&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt;
+              &lt;span class=&quot;na&quot;&gt;containerID&lt;/span&gt;  &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;pag-itemContainer&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+              &lt;span class=&quot;na&quot;&gt;perPage&lt;/span&gt;      &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  &lt;span class=&quot;cm&quot;&gt;/* num of items per page */&lt;/span&gt;
+              &lt;span class=&quot;na&quot;&gt;startPage&lt;/span&gt;    &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+              &lt;span class=&quot;na&quot;&gt;startRange&lt;/span&gt;   &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+              &lt;span class=&quot;na&quot;&gt;midRange&lt;/span&gt;     &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+              &lt;span class=&quot;na&quot;&gt;endRange&lt;/span&gt;     &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+          &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;});&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;lt;/script&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;这个js的作用是对&lt;code class=&quot;highlighter-rouge&quot;&gt;id=&quot;pag-holder&quot;&lt;/code&gt;的div进行渲染，主要是实现对应的页数和样式，对应的html在&lt;code class=&quot;highlighter-rouge&quot;&gt;_includes/pagination.html&lt;/code&gt;中，注意js中的&lt;code class=&quot;highlighter-rouge&quot;&gt;containerID&lt;/code&gt;，它会找页面中&lt;code class=&quot;highlighter-rouge&quot;&gt;id=pag-itemContainer&lt;/code&gt;的id，对其进行分页，观察得到其实他就是将所有的item包装成&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;ul&amp;gt;&amp;lt;li&amp;gt;&lt;/code&gt;，然后对每个item进行分页，然后下面就好做了，下面是&lt;code class=&quot;highlighter-rouge&quot;&gt;python.html&lt;/code&gt;中的部分代码：&lt;/p&gt;
+
+&lt;div class=&quot;language-html highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;		&lt;span class=&quot;nt&quot;&gt;&amp;lt;ul&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;id=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;pag-itemContainer&quot;&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;style=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;list-style:none;&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+    {\% assign counter = 0 \%}
+		{\% for post in site.categories[&#39;Python&#39;] \%}
+		{\% assign counter = counter | plus: 1 \%}
+		&lt;span class=&quot;nt&quot;&gt;&amp;lt;li&amp;gt;&lt;/span&gt;
+		...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;ps：因为jekyll会对代码中语法检查，我使用”\“进行转义&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;因为直接使用&lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;ul&amp;gt;&amp;lt;li&amp;gt;&lt;/code&gt;会有一个圆点在每个item之前，使用&lt;code class=&quot;highlighter-rouge&quot;&gt;style=&quot;list-style:none;&quot;&lt;/code&gt;即可去除，这里我用了一个计数器，是为了在&lt;code class=&quot;highlighter-rouge&quot;&gt;_includes/pagination.html&lt;/code&gt;中判断文章是否达到分页要求，因为我设置的是&lt;code class=&quot;highlighter-rouge&quot;&gt;perPage:5&lt;/code&gt;，所以我有一个大于5的判断。&lt;/p&gt;
+
+&lt;h3 id=&quot;step-3&quot;&gt;Step 3&lt;/h3&gt;
+
+&lt;p&gt;最后一步就是对分页的样式重新定义，因为jPages自带的样式很不好看，我使用的是bootstrap，这里需要在&lt;code class=&quot;highlighter-rouge&quot;&gt;jPages.js&lt;/code&gt;中进行修改，具体可以在我&lt;a href=&quot;https://github.com/Jack614/jalpc_jekyll_theme/blob/gh-pages/static/js/jPages.js&quot;&gt;项目&lt;/a&gt;中的代码查看，有注释的部分是jPages原来的代码。&lt;/p&gt;
+</description>
+        <pubDate>Sat, 04 Jun 2016 00:00:00 +0000</pubDate>
+        <link>http://www.jack003.com//html/2016/06/04/jekyll-pagination-with-jpages.html</link>
+        <guid isPermaLink="true">http://www.jack003.com//html/2016/06/04/jekyll-pagination-with-jpages.html</guid>
+        
+        <category>pagination</category>
+        
+        <category>jekyll</category>
+        
+        
+        <category>HTML</category>
+        
+      </item>
+    
+      <item>
+        <title>神奇的Python</title>
+        <description>&lt;p&gt;今天在Python中发现一个神奇的功能，在Python shell中输入&lt;code class=&quot;highlighter-rouge&quot;&gt;import this&lt;/code&gt;，有如下展示：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;The Zen of Python, by Tim Peters
+
+Beautiful is better than ugly.
+Explicit is better than implicit.
+Simple is better than complex.
+Complex is better than complicated.
+Flat is better than nested.
+Sparse is better than dense.
+Readability counts.
+Special cases aren&#39;t special enough to break the rules.
+Although practicality beats purity.
+Errors should never pass silently.
+Unless explicitly silenced.
+In the face of ambiguity, refuse the temptation to guess.
+There should be one-- and preferably only one --obvious way to do it.
+Although that way may not be obvious at first unless you&#39;re Dutch.
+Now is better than never.
+Although never is often better than *right* now.
+If the implementation is hard to explain, it&#39;s a bad idea.
+If the implementation is easy to explain, it may be a good idea.
+Namespaces are one honking great idea -- let&#39;s do more of those!
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;原来这就是Python之禅，哈哈&lt;/p&gt;
+</description>
+        <pubDate>Thu, 02 Jun 2016 00:00:00 +0000</pubDate>
+        <link>http://www.jack003.com//python/life/2016/06/02/zen-of-python.html</link>
+        <guid isPermaLink="true">http://www.jack003.com//python/life/2016/06/02/zen-of-python.html</guid>
+        
+        <category>Python</category>
+        
+        
+        <category>Python</category>
+        
+        <category>Life</category>
+        
+      </item>
+    
+      <item>
+        <title>使用iTerm2上传下载文件</title>
+        <description>&lt;p&gt;在Mac上使用iTerm2确实让Linux终端操作方便的很多，加上&lt;a href=&quot;https://github.com/robbyrussell/oh-my-zsh&quot;&gt;oh-my-zsh&lt;/a&gt;这个强大shell的利器，敲命令就像滚键盘一样。&lt;/p&gt;
+
+&lt;p&gt;但是iTerm2没有对文件上传下载进行支持，这个是要比secureCRT弱的地方，不过我们总有办法能够解决，因为iTerm2足够强大，下面是利用rz/sz工具来实现文件上传下载的方法：&lt;/p&gt;
+
+&lt;p&gt;在Mac电脑上安装rz/sz：&lt;code class=&quot;highlighter-rouge&quot;&gt;brew install lrzsz&lt;/code&gt;&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/usr/bin/env bash&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# iterm2-zmodem&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# copyright (c) 2013 by Harald Lapp &amp;lt;harald@octris.org&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# AppleScript portion from:&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# http://stackoverflow.com/questions/4309087/cancel-button-on-osascript-in-a-bash-script&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# licensed under cc-wiki with attribution required &lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# This script can be found at:&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# https://github.com/aurora/iterm2-zmodem&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# This is a re-implementation of the shell scripts &quot;iterm2-recv-zmodem.sh&quot; and&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# &quot;iterm2-send-zmodem.sh&quot; found at https://github.com/mmastrac/iterm2-zmodem&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# usage&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt; !&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;sz&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt; !&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;rz&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;; &lt;span class=&quot;k&quot;&gt;then
+    &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;usage: &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$0&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; sz|rz&quot;&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;exit
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# send Z-Modem cancel sequence&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;function &lt;/span&gt;cancel &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; -e &lt;span class=&quot;se&quot;&gt;\\&lt;/span&gt;x18&lt;span class=&quot;se&quot;&gt;\\&lt;/span&gt;x18&lt;span class=&quot;se&quot;&gt;\\&lt;/span&gt;x18&lt;span class=&quot;se&quot;&gt;\\&lt;/span&gt;x18&lt;span class=&quot;se&quot;&gt;\\&lt;/span&gt;x18
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# send notification using growlnotify&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;function &lt;/span&gt;notify &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;local &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;
+    
+    &lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;command&lt;/span&gt; -v growlnotify &amp;gt;/dev/null 2&amp;gt;&amp;amp;1; &lt;span class=&quot;k&quot;&gt;then
+        &lt;/span&gt;growlnotify -a /Applications/iTerm.app -n &lt;span class=&quot;s2&quot;&gt;&quot;iTerm&quot;&lt;/span&gt; -m &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$msg&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; -t &lt;span class=&quot;s2&quot;&gt;&quot;File transfer&quot;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;else
+        &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;# &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$msg&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; | tr &lt;span class=&quot;s1&quot;&gt;&#39;\n&#39;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39; &#39;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;#setup&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$LRZSZ_PATH&lt;/span&gt; !&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;LRZSZ_PATH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;:&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$LRZSZ_PATH&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;LRZSZ_PATH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt;
+
+&lt;span class=&quot;nv&quot;&gt;PATH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;command&lt;/span&gt; -p getconf PATH&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;:/usr/local/bin&lt;span class=&quot;nv&quot;&gt;$LRZSZ_PATH&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;ZCMD&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;command&lt;/span&gt; -v &lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt; &amp;gt;/dev/null 2&amp;gt;&amp;amp;1; &lt;span class=&quot;k&quot;&gt;then
+        &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;elif &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;command&lt;/span&gt; -v l&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt; &amp;gt;/dev/null 2&amp;gt;&amp;amp;1; &lt;span class=&quot;k&quot;&gt;then
+        &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;l&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# main&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$ZCMD&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;; &lt;span class=&quot;k&quot;&gt;then
+    &lt;/span&gt;cancel
+    &lt;span class=&quot;nb&quot;&gt;echo
+
+    &lt;/span&gt;notify &lt;span class=&quot;s2&quot;&gt;&quot;Unable to find Z-Modem tools&quot;&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;exit
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;elif&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;rz&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;# receive a file&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;DST&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;
+        osascript &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+            -e &lt;span class=&quot;s2&quot;&gt;&quot;tell application &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;iTerm&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; to activate&quot;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+            -e &lt;span class=&quot;s2&quot;&gt;&quot;tell application &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;iTerm&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; to set thefile to choose folder with prompt &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;Choose a folder to place received files in&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+            -e &lt;span class=&quot;s2&quot;&gt;&quot;do shell script (&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;echo &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;amp;(quoted form of POSIX path of thefile as Unicode text)&amp;amp;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;)&quot;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+    
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$DST&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;; &lt;span class=&quot;k&quot;&gt;then
+        &lt;/span&gt;cancel
+        &lt;span class=&quot;nb&quot;&gt;echo 
+    &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;fi
+
+	&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$DST&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+	
+    notify &lt;span class=&quot;s2&quot;&gt;&quot;Z-Modem started receiving file&quot;&lt;/span&gt;
+
+    &lt;span class=&quot;nv&quot;&gt;$ZCMD&lt;/span&gt; -e -y
+    &lt;span class=&quot;nb&quot;&gt;echo 
+
+    &lt;/span&gt;notify &lt;span class=&quot;s2&quot;&gt;&quot;Z-Modem finished receiving file&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;# send a file&lt;/span&gt;
+    &lt;span class=&quot;nv&quot;&gt;SRC&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;
+        osascript &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+            -e &lt;span class=&quot;s2&quot;&gt;&quot;tell application &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;iTerm&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; to activate&quot;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+            -e &lt;span class=&quot;s2&quot;&gt;&quot;tell application &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;iTerm&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; to set thefile to choose file with prompt &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;Choose a file to send&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+            -e &lt;span class=&quot;s2&quot;&gt;&quot;do shell script (&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;echo &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;amp;(quoted form of POSIX path of thefile as Unicode text)&amp;amp;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;)&quot;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$SRC&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;; &lt;span class=&quot;k&quot;&gt;then
+        &lt;/span&gt;cancel
+        &lt;span class=&quot;nb&quot;&gt;echo 
+    &lt;/span&gt;&lt;span class=&quot;k&quot;&gt;fi
+
+    &lt;/span&gt;notify &lt;span class=&quot;s2&quot;&gt;&quot;Z-Modem started sending
+&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$SRC&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+
+    &lt;span class=&quot;nv&quot;&gt;$ZCMD&lt;/span&gt; -e &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$SRC&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;echo 
+
+    &lt;/span&gt;notify &lt;span class=&quot;s2&quot;&gt;&quot;Z-Modem finished sending
+&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$SRC&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;首先将这个脚本写到/usr/local/bin/iterm2-zmodem文件下，给它可执行权限&lt;code class=&quot;highlighter-rouge&quot;&gt;chmod +x /usr/local/bin/iterm2/zmodem&lt;/code&gt;，这个脚本是在Linux终端使用rz/sz时调用的，需要由iTerm2触发，在iTerm2-&amp;gt;Preferences…-&amp;gt;Profiles-&amp;gt;Advanced下的Triggers，点击Edit进入编辑。加入如下配置即可：&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Regular expression: \*\*B0100
+Action:             Run Coprocess
+Parameters:         /usr/local/bin/iterm2-zmodem sz
+
+Regular expression: \*\*B00000000000000
+Action:             Run Coprocess
+Parameters:         /usr/local/bin/iterm2-zmodem rz
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;Github链接：&lt;a href=&quot;https://github.com/Jack614/iterm2-zmodem&quot;&gt;https://github.com/Jack614/iterm2-zmodem&lt;/a&gt;&lt;/p&gt;
+</description>
+        <pubDate>Sun, 29 May 2016 00:00:00 +0000</pubDate>
+        <link>http://www.jack003.com//mac/2016/05/29/Z-Modem-integration-for-iTerm2.html</link>
+        <guid isPermaLink="true">http://www.jack003.com//mac/2016/05/29/Z-Modem-integration-for-iTerm2.html</guid>
+        
+        <category>Mac</category>
+        
+        
+        <category>Mac</category>
+        
+      </item>
+    
+      <item>
+        <title>From mysql to redis with python</title>
+        <description>&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/usr/bin/python&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;## SQL to Redis&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# import Redis and MySQL drivers&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;redis&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;MySQLdb&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;collections&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Counter&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# create class&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;dataProcessor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+
+	&lt;span class=&quot;c&quot;&gt;# Mysql server data&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;MYSQL_IP_ADDRESS_SERVER&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&#39;localhost&#39;&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;MYSQL_USER&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&#39;root&#39;&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;MYSQL_PASSWORD&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&#39;my_strong_password&#39;&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;MYSQL_DATABASE_NAME&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&#39;database_name&#39;&lt;/span&gt;
+
+	&lt;span class=&quot;c&quot;&gt;# Redis server data&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;REDIS_SERVER&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&#39;localhost&#39;&lt;/span&gt;
+
+	&lt;span class=&quot;c&quot;&gt;# function to get data from mysql and to transfer it to redis&lt;/span&gt;
+	&lt;span class=&quot;nd&quot;&gt;@staticmethod&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;sql_to_redis&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;r_redis&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;redis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;StrictRedis&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dataProcessor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;REDIS_SERVER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Connected to Redis successfully!&quot;&lt;/span&gt;
+
+		&lt;span class=&quot;n&quot;&gt;database&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;MySQLdb&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dataProcessor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MYSQL_IP_ADDRESS_SERVER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dataProcessor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MYSQL_USER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dataProcessor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MYSQL_PASSWORD&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dataProcessor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;MYSQL_DATABASE_NAME&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Connected to MySQL successfully!&quot;&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;
+
+		&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;select&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&#39;SELECT * FROM records WHERE location_id = 9 LIMIT 100&#39;&lt;/span&gt;
+		&lt;span class=&quot;c&quot;&gt;# select = &#39;SELECT * FROM records WHERE location_id = 9&#39;&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;execute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;select&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fetchall&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+		&lt;span class=&quot;c&quot;&gt;# Clean redis before run again&lt;/span&gt;
+		&lt;span class=&quot;c&quot;&gt;# This is for test purpose&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;r_redis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;delete&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;all_records&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+		&lt;span class=&quot;c&quot;&gt;# Put all data from MySQL to Redis&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;r_redis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rpush&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;all_records&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+
+		&lt;span class=&quot;c&quot;&gt;# Close connection to DB and Cursor&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+	
+	&lt;span class=&quot;nd&quot;&gt;@staticmethod&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get_data_from_redis&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+
+		&lt;span class=&quot;n&quot;&gt;r2_redis&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;redis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;StrictRedis&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dataProcessor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;REDIS_SERVER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+		&lt;span class=&quot;nb&quot;&gt;list&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
+		&lt;span class=&quot;nb&quot;&gt;list&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;r2_redis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lrange&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;all_records&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+		&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;list&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;
+
+		&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Size of list:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;
+
+		&lt;span class=&quot;n&quot;&gt;word_list&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;word&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;list&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;word&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()]&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;word_list&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;
+
+		&lt;span class=&quot;n&quot;&gt;words_to_count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;word&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;word&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;word_list&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;word&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;isupper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+		&lt;span class=&quot;n&quot;&gt;top_ten&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Counter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;words_to_count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+		&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Top 10 Most popular words:&quot;&lt;/span&gt;
+		&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;top_ten&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;most_common&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+        <pubDate>Wed, 04 May 2016 00:00:00 +0000</pubDate>
+        <link>http://www.jack003.com//python/database/2016/05/04/python-mysql-redis.html</link>
+        <guid isPermaLink="true">http://www.jack003.com//python/database/2016/05/04/python-mysql-redis.html</guid>
+        
+        <category>Python</category>
+        
+        <category>MySQL</category>
+        
+        <category>Redis</category>
+        
+        
+        <category>Python</category>
+        
+        <category>Database</category>
+        
+      </item>
+    
+      <item>
+        <title>PEP8 Python 编码规范整理</title>
+        <description>&lt;h4 id=&quot;section&quot;&gt;一、代码编排&lt;/h4&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;缩进。4个空格的缩进（编辑器都可以完成此功能），不使用Tap，更不能混合使用Tap和空格。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;每行最大长度79，换行可以使用反斜杠，最好使用圆括号。换行点要在操作符的后边敲回车。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;类和top-level函数定义之间空两行；类中的方法定义之间空一行；函数内逻辑无关段落之间空一行；其他地方尽量不要再空行。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&quot;section-1&quot;&gt;二、文档编排&lt;/h4&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;模块内容的顺序：模块说明和docstring—import—globals&amp;amp;constants—其他定义。其中import部分，又按标准、三方和自己编写顺序依次排放，之间空一行。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;不要在一句import中多个库，比如import os, sys不推荐。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;如果采用from XX import XX引用库，可以省略‘module.’，都是可能出现命名冲突，这时就要采用import XX。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;三、空格的使用&lt;/h4&gt;
+
+&lt;h6 id=&quot;section-3&quot;&gt;总体原则，避免不必要的空格。&lt;/h6&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;各种右括号前不要加空格。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;逗号、冒号、分号前不要加空格。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;函数的左括号前不要加空格。如Func(1)。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;序列的左括号前不要加空格。如list[2]。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;操作符左右各加一个空格，不要为了对齐增加空格。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;函数默认参数使用的赋值符左右省略空格。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;不要将多句语句写在同一行，尽管使用‘；’允许。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;if/for/while语句中，即使执行语句只有一句，也必须另起一行。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&quot;section-4&quot;&gt;四、注释&lt;/h4&gt;
+
+&lt;h6 id=&quot;section-5&quot;&gt;总体原则，错误的注释不如没有注释。所以当一段代码发生变化时，第一件事就是要修改注释！&lt;/h6&gt;
+
+&lt;h6 id=&quot;section-6&quot;&gt;注释必须使用英文，最好是完整的句子，首字母大写，句后要有结束符，结束符后跟两个空格，开始下一句。如果是短语，可以省略结束符。&lt;/h6&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;块注释，在一段代码前增加的注释。在‘#’后加一空格。段落之间以只有‘#’的行间隔。比如：&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# Description : Module config.
+# 
+# Input : None
+#
+# Output : None
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;行注释，在一句代码后加注释。比如：x = x + 1 # Increment x
+但是这种方式尽量少使用。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;避免无谓的注释。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&quot;section-7&quot;&gt;五、文档描述&lt;/h4&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;为所有的共有模块、函数、类、方法写docstrings；非共有的没有必要，但是可以写注释（在def的下一行）。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;如果docstring要换行，参考如下例子,详见PEP 257
+&amp;gt;Return a foobang
+Optional plotz says to frobnicate the bizbaz first.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&quot;section-8&quot;&gt;六、命名规范&lt;/h4&gt;
+&lt;p&gt;###### 总体原则，新编代码必须按下面命名风格进行，现有库的编码尽量保持风格。
+1. 尽量单独使用小写字母‘l’，大写字母‘O’等容易混淆的字母。&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;模块命名尽量短小，使用全部小写的方式，可以使用下划线。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;包命名尽量短小，使用全部小写的方式，不可以使用下划线。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;类的命名使用CapWords的方式，模块内部使用的类采用_CapWords的方式。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;异常命名使用CapWords+Error后缀的方式。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;全局变量尽量只在模块内有效，类似C语言中的static。实现方法有两
+种，一是__all__机制;二是前缀一个下划线。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;函数命名使用全部小写的方式，可以使用下划线。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;常量命名使用全部大写的方式，可以使用下划线。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;类的属性（方法和变量）命名使用全部小写的方式，可以使用下划线。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;类的属性有3种作用域public、non-public和subclass API，可以理解成C++中的public、private、protected，non-public属性前，前缀一条下划线。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;类的属性若与关键字名字冲突，后缀一下划线，尽量不要使用缩略等其他方式。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;为避免与子类属性命名冲突，在类的一些属性前，前缀两条下划线。比如：类Foo中声明__a,访问时，只能通过Foo._Foo__a，避免歧义。如果子类也叫Foo，那就无能为力了。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;类的方法第一个参数必须是self，而静态方法第一个参数必须是cls。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&quot;section-9&quot;&gt;七、编码建议&lt;/h4&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;编码中考虑到其他python实现的效率等问题，比如运算符‘+’在CPython（Python）中效率很高，都是Jython中却非常低，所以应该采用.join()的方式。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;尽可能使用‘is’‘is not’取代‘==’，比如if x is not None 要优于if x。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;使用基于类的异常，每个模块或包都有自己的异常类，此异常类继承自Exception。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;异常中不要使用裸露的except，except后跟具体的exceptions。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;异常中try的代码尽可能少。比如：&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;collection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;except&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;KeyError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key_not_found&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;handle_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;要优于&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# Too broad!&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;handle_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;collection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;except&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;KeyError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# Will also catch KeyError raised by handle_value()&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key_not_found&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;使用startswith() and endswith()代替切片进行序列前缀或后缀的检查。比如：
+Yes: &lt;code class=&quot;highlighter-rouge&quot;&gt;if foo.startswith(&#39;bar&#39;)&lt;/code&gt;:优于
+No: &lt;code class=&quot;highlighter-rouge&quot;&gt;if foo[:3] == &#39;bar&#39;&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;使用isinstance()比较对象的类型。比如
+Yes: &lt;code class=&quot;highlighter-rouge&quot;&gt;if isinstance(obj, int)&lt;/code&gt;: 优于
+No: &lt;code class=&quot;highlighter-rouge&quot;&gt;if type(obj) is type(1)&lt;/code&gt;:&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;判断序列空或不空，有如下规则
+Yes: &lt;code class=&quot;highlighter-rouge&quot;&gt;if not seq:
+if seq:&lt;/code&gt;
+优于
+No: &lt;code class=&quot;highlighter-rouge&quot;&gt;if len(seq)
+if not len(seq)&lt;/code&gt;&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;字符串不要以空格收尾。&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;二进制数据判断使用 if boolvalue的方式。&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+</description>
+        <pubDate>Wed, 06 Apr 2016 00:00:00 +0000</pubDate>
+        <link>http://www.jack003.com//python/2016/04/06/python-standard.html</link>
+        <guid isPermaLink="true">http://www.jack003.com//python/2016/04/06/python-standard.html</guid>
+        
+        <category>优化</category>
+        
+        
+        <category>Python</category>
+        
+      </item>
+    
+  </channel>
+</rss>
