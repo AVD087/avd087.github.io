@@ -64,15 +64,16 @@ fdiv = document.querySelector('#bm');
 if (!fdiv) {
   fdiv = document.createElement('div');
   fdiv.id = 'bm';
+  fdiv.style='background-color:blue;color:white;border-radius:10px;margin:2%;';
   document.body.insertBefore(fdiv, document.body.firstChild);
 }
 
 fdiv.innerHTML = [
   new Date().toLocaleTimeString(),
-  'Click to copy the filename, then right click to download'
+  'Click to copy the filename, then right click to download  '
 ].concat(
   Object.keys(cfmt).map(z => cfmt[z]).filter(z => /href/.test(z))
-).join('  ');
+).join('   ');
 
 document.querySelector('#masthead-positioner').style.position = 'static';
 document.querySelector('.skip-nav').style.display = 'none';
