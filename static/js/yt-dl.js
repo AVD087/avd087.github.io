@@ -72,7 +72,7 @@ fdiv.innerHTML = [
   'Click to copy the filename, then right click to download'
 ].concat(
   Object.keys(cfmt).map(z => cfmt[z]).filter(z => /href/.test(z))
-).join('<br>');
+).join('    ');
 
 document.querySelector('#masthead-positioner').style.position = 'static';
 document.querySelector('.skip-nav').style.display = 'none';
