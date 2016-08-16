@@ -64,7 +64,7 @@ fdiv = document.querySelector('#bm');
 if (!fdiv) {
   fdiv = document.createElement('div');
   fdiv.id = 'bm';
-  fdiv.style='color:grey;font-weight:900;border-radius:10px;margin:3%;';
+  fdiv.style='color:grey;padding:2%;font-weight:900;border-radius:10px;margin:3%;';
   document.body.insertBefore(fdiv, document.body.firstChild);
 }
 
