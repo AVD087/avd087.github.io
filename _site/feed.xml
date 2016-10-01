@@ -1,40 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Your awesome title</title>
-    <description>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
-</description>
-    <link>http://example.com/</link>
-    <atom:link href="http://example.com/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 27 Sep 2016 15:35:41 +0000</pubDate>
-    <lastBuildDate>Tue, 27 Sep 2016 15:35:41 +0000</lastBuildDate>
+    <title>Lorem Ipsum - Web Developer</title>
+    <description>A blog about lorem ipsum ...</description>
+    <link>/</link>
+    <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Sat, 01 Oct 2016 18:52:36 +0000</pubDate>
+    <lastBuildDate>Sat, 01 Oct 2016 18:52:36 +0000</lastBuildDate>
     <generator>Jekyll v3.2.1</generator>
     
       <item>
-        <title>Welcome to Jekyll!</title>
-        <description>&lt;p&gt;You’ll find this post in your &lt;code class=&quot;highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run &lt;code class=&quot;highlighter-rouge&quot;&gt;jekyll serve&lt;/code&gt;, which launches a web server and auto-regenerates your site when a file is updated.&lt;/p&gt;
-
-&lt;p&gt;To add new posts, simply add a file in the &lt;code class=&quot;highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory that follows the convention &lt;code class=&quot;highlighter-rouge&quot;&gt;YYYY-MM-DD-name-of-post.ext&lt;/code&gt; and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.&lt;/p&gt;
-
-&lt;p&gt;Jekyll also offers powerful support for code snippets:&lt;/p&gt;
-
-&lt;figure class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Hi, &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;print_hi&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'Tom'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; prints 'Hi, Tom' to STDOUT.&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/figure&gt;
-
-&lt;p&gt;Check out the &lt;a href=&quot;http://jekyllrb.com/docs/home&quot;&gt;Jekyll docs&lt;/a&gt; for more info on how to get the most out of Jekyll. File all bugs/feature requests at &lt;a href=&quot;https://github.com/jekyll/jekyll&quot;&gt;Jekyll’s GitHub repo&lt;/a&gt;. If you have questions, you can ask them on &lt;a href=&quot;https://talk.jekyllrb.com/&quot;&gt;Jekyll Talk&lt;/a&gt;.&lt;/p&gt;
-
-</description>
-        <pubDate>Tue, 27 Sep 2016 15:26:47 +0000</pubDate>
-        <link>http://example.com/jekyll/update/2016/09/27/welcome-to-jekyll.html</link>
-        <guid isPermaLink="true">http://example.com/jekyll/update/2016/09/27/welcome-to-jekyll.html</guid>
+        <title>Sharding in MongoDB</title>
+        <description>&lt;p class=&quot;music-read&quot;&gt;&lt;a href=&quot;spotify:track:4DAZ8UYNpWVIV46aLkN2Qp&quot;&gt;Music for reading(spotify)&lt;/a&gt;&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://cdn1.tnwcdn.com/wp-content/blogs.dir/1/files/2016/02/raw.gif&quot; /&gt;&lt;/p&gt; &lt;h2 id=&quot;sharding--why-&quot;&gt;Sharding ? why ?&lt;/h2&gt; &lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste quas, esse laudantium quis ipsa consequuntur iure atque! Necessitatibus quam quidem illum, corrupti molestiae, maxime neque, consequuntur quia alias, modi commodi.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cupiditate rem ducimus dolores repellat itaque perferendis corporis ex dicta doloremque optio harum excepturi, ut, praesentium asperiores! Voluptatum amet perspiciatis iusto, fugiat!Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum, libero quia placeat necessitatibus culpa mollitia, illum, quam sed ratione ad eaque suscipit consectetur itaque quasi aperiam. Quaerat, nihil voluptas...</description>
+        <pubDate>Mon, 12 Sep 2016 00:06:31 +0000</pubDate>
+        <link>/sharding/</link>
+        <guid isPermaLink="true">/sharding/</guid>
+        
+        <category>mongodb</category>
         
         
-        <category>jekyll</category>
+        <category>Jekyll is awesome</category>
         
-        <category>update</category>
+      </item>
+    
+      <item>
+        <title>Github is awesome</title>
+        <description>&lt;p class=&quot;music-read&quot;&gt;&lt;a href=&quot;spotify:track:4DAZ8UYNpWVIV46aLkN2Qp&quot;&gt;Music for reading(spotify)&lt;/a&gt;&lt;/p&gt; &lt;p&gt;&lt;img src=&quot;http://cdn1.tnwcdn.com/wp-content/blogs.dir/1/files/2016/02/raw.gif&quot; /&gt;&lt;/p&gt; &lt;h2 id=&quot;github--why-&quot;&gt;Github ? why ?&lt;/h2&gt; &lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iste quas, esse laudantium quis ipsa consequuntur iure atque! Necessitatibus quam quidem illum, corrupti molestiae, maxime neque, consequuntur quia alias, modi commodi.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cupiditate rem ducimus dolores repellat itaque perferendis corporis ex dicta doloremque optio harum excepturi, ut, praesentium asperiores! Voluptatum amet perspiciatis iusto, fugiat!Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum, libero quia placeat necessitatibus culpa mollitia, illum, quam sed ratione ad eaque suscipit consectetur itaque quasi aperiam. Quaerat, nihil voluptas...</description>
+        <pubDate>Sat, 12 Mar 2016 00:06:31 +0000</pubDate>
+        <link>/space/</link>
+        <guid isPermaLink="true">/space/</guid>
+        
+        <category>mongodb</category>
+        
+        
+        <category>Github is awesome</category>
         
       </item>
     
