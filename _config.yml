@@ -43,10 +43,10 @@ links:
 # projects in header index
 projects:
   - name: Github Repo Scraper
-    url: https://abdeshani.in/github
+    url: https://abdeshani.in/welcome/default/github
   - name: Insta Scraper
-    url: https://abdeshani.in/insta
+    url: https://abdeshani.in/welcome/default/insta
   - name: Image Scraper
-    url: https://abdeshani.in/images 
+    url: https://abdeshani.in/welcome/default/images
 # exclude my node related stuff
 exclude: ['package.json', 'src', 'node_modules']
